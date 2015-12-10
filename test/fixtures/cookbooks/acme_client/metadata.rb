@@ -1,0 +1,11 @@
+name             'acme_client'
+maintainer       'Thijs Houtenbos'
+maintainer_email 'thoutenbos@schubergphilis.com'
+license          'All rights reserved'
+description      'Configures the Acme cookbook'
+long_description 'Configures the Acme cookbook'
+version          '0.1.0'
+
+depends          'letsencrypt'
+depends          'yum'
+depends          'nginx', '~> 2.7'

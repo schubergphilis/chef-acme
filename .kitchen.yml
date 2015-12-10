@@ -1,0 +1,35 @@
+---
+driver:
+  name: vagrant
+  customize:
+    memory: 1024
+
+platforms:
+- name: centos-7
+  driver:
+    box: opscode-centos-7.1
+    image: centos-7.1-x64
+
+provisioner:
+  name: chef_zero
+
+suites:
+- name: server
+  driver:
+    network:
+    - ["private_network", {ip: "192.168.1.30"}]
+  run_list:
+  - recipe[acme_server]
+
+- name: client
+  driver:
+    network:
+    - ["private_network", {ip: "192.168.1.40"}]
+    - ["forwarded_port", {guest: 443, host: 8443}]
+  run_list:
+  - recipe[acme_client]
+  attributes:
+    letsencrypt:
+      endpoint: http://192.168.1.30:4000
+      contact:
+      - mailto:admin@example.com
