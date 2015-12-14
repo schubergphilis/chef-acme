@@ -40,9 +40,10 @@ include_recipe 'acme_client::nginx'
 
 # Request the real certificate
 letsencrypt_certificate 'test.example.com' do
-  crt      '/etc/ssl/test.example.com.crt'
-  key      '/etc/ssl/test.example.com.key'
-  method   'http'
-  wwwroot  node['nginx']['default_root']
-  notifies :reload, 'service[nginx]'
+  fullchain '/etc/ssl/test.example.com.crt'
+  chain     '/etc/ssl/test.example.com-chain.crt'
+  key       '/etc/ssl/test.example.com.key'
+  method    'http'
+  wwwroot   node['nginx']['default_root']
+  notifies  :reload, 'service[nginx]'
 end

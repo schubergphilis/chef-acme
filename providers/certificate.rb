@@ -21,6 +21,16 @@
 use_inline_resources
 
 action :create do
+  unless new_resource.crt.nil? ^ new_resource.fullchain.nil?
+    Chef::Log.error("[#{new_resource.cn}] No valid certificate output specified, only one of the crt/fullchain propery is permitted and required")
+    return
+  end
+
+  if new_resource.key.nil?
+    Chef::Log.error("[#{new_resource.cn}] No valid key output specified, the key propery is required")
+    return
+  end
+
   file "#{new_resource.cn} SSL key" do
     path      new_resource.key
     owner     new_resource.owner
@@ -31,14 +41,17 @@ action :create do
     action    :create_if_missing
   end
 
-  mykey = OpenSSL::PKey::RSA.new ::File.read new_resource.key
+  mycert   = nil
+  mykey    = OpenSSL::PKey::RSA.new ::File.read new_resource.key
+  renew_at = ::Time.now + 60 * 60 * 24 * node['letsencrypt']['renew']
 
-  if ::File.exist? new_resource.crt
+  if !new_resource.crt.nil? && ::File.exist?(new_resource.crt)
     mycert   = ::OpenSSL::X509::Certificate.new ::File.read new_resource.crt
-    renew_at = ::Time.now + 60 * 60 * 24 * node['letsencrypt']['renew']
+  elsif !new_resource.fullchain.nil? && ::File.exist?(new_resource.fullchain)
+    mycert   = ::OpenSSL::X509::Certificate.new ::File.read new_resource.fullchain
   end
 
-  if (! ::File.exist? new_resource.crt) || mycert.not_after <= renew_at
+  if mycert.nil? || mycert.not_after <= renew_at
     authz = acme_authz new_resource.cn
 
     case authz.status
@@ -46,11 +59,21 @@ action :create do
       newcert = acme_cert(new_resource.cn, mykey)
 
       file "#{new_resource.cn} SSL new crt" do
-        path    new_resource.crt
+        path    new_resource.crt || new_resource.fullchain
         owner   new_resource.owner
         group   new_resource.group
+        content new_resource.crt.nil? ? newcert.fullchain_to_pem : newcert.to_pem
         mode    00644
-        content newcert.to_pem
+        action  :create
+      end
+
+      file "#{new_resource.cn} SSL new chain" do
+        path    new_resource.chain
+        owner   new_resource.owner
+        group   new_resource.group
+        content newcert.chain_to_pem
+        not_if  { new_resource.chain.nil? }
+        mode    00644
         action  :create
       end
 
@@ -91,11 +114,21 @@ action :create do
               Chef::Log.error("[#{new_resource.cn}] Certificate request failed: #{e.message}")
             else
               file "#{new_resource.cn} SSL new crt" do
-                path    new_resource.crt
+                path    new_resource.crt || new_resource.fullchain
                 owner   new_resource.owner
                 group   new_resource.group
+                content new_resource.crt.nil? ? newcert.fullchain_to_pem : newcert.to_pem
                 mode    00644
-                content newcert.to_pem
+                action  :create
+              end
+
+              file "#{new_resource.cn} SSL new chain" do
+                path    new_resource.chain
+                owner   new_resource.owner
+                group   new_resource.group
+                content newcert.chain_to_pem
+                not_if  { new_resource.chain.nil? }
+                mode    00644
                 action  :create
               end
             end

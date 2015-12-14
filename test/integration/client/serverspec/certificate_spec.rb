@@ -37,6 +37,14 @@ describe x509_private_key('/etc/ssl/test.example.com.key') do
   it { should have_matching_certificate('/etc/ssl/test.example.com.crt') }
 end
 
+describe x509_certificate('/etc/ssl/test.example.com-chain.crt') do
+  it { should be_certificate }
+  it { should have_purpose 'SSL server' }
+  it { should have_purpose 'SSL server CA' }
+  its(:subject) { should eq '/CN=happy hacker fake CA' }
+  its(:issuer) { should eq '/CN=cackling cryptographer fake ROOT' }
+end
+
 describe command('echo | openssl s_client -connect 0:443 2>&1 | openssl x509 -noout -serial') do
   its(:stdout) { should eq `openssl x509 -in /etc/ssl/test.example.com.crt -noout -serial` }
 end

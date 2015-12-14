@@ -1,7 +1,11 @@
-Letsencrypt CHANGELOG
+letsencrypt changelog
 ==============
 
-This file is used to list changes made in each version of the acme cookbook.
+This file is used to list changes made in each version of the letsencrypt cookbook.
+
+0.1.1
+-----
+- Thijs Houtenbos - Added `chain` and `fullchain` properties
 
 0.1.0
 -----

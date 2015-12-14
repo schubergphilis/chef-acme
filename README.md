@@ -38,6 +38,112 @@ end
 
 A working example can be found in the included `acme_client` test cookbook.
 
+Providers
+---------
+### certificate
+<table>
+  <tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><tt>cn</tt></td>
+    <td>String</td>
+    <td>The common name for the certificate</td>
+    <td><tt>Name of the resource block</tt></td>
+  </tr>
+  <tr>
+    <td><tt>crt</tt></td>
+    <td>String</td>
+    <td>File path to place the certificate</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>key</tt></td>
+    <td>String</td>
+    <td>File path to place the private key</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>chain</tt></td>
+    <td>String</td>
+    <td>File path to place the certificate chain</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>fullchain</tt></td>
+    <td>String</td>
+    <td>File path to place the certificate including the chain</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>owner</tt></td>
+    <td>String</td>
+    <td>Owner of the created files</td>
+    <td><tt>root</tt></td>
+  </tr>
+  <tr>
+    <td><tt>group</tt></td>
+    <td>String</td>
+    <td>Group of the created files</td>
+    <td><tt>root</tt></td>
+  </tr>
+  <tr>
+    <td><tt>method</tt></td>
+    <td>String</td>
+    <td>Validation method</td>
+    <td><tt>http</tt></td>
+  </tr>
+  <tr>
+    <td><tt>wwwroot</tt></td>
+    <td>String</td>
+    <td>Path to the wwwroot of the domain</td>
+    <td><tt>/var/www</tt></td>
+  </tr>
+</table>
+
+### selfsigned
+<table>
+  <tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><tt>cn</tt></td>
+    <td>String</td>
+    <td>The common name for the certificate</td>
+    <td><tt>Name of the resource block</tt></td>
+  </tr>
+  <tr>
+    <td><tt>crt</tt></td>
+    <td>String</td>
+    <td>File path to place the certificate</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>key</tt></td>
+    <td>String</td>
+    <td>File path to place the private key</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>owner</tt></td>
+    <td>String</td>
+    <td>Owner of the created files</td>
+    <td><tt>root</tt></td>
+  </tr>
+  <tr>
+    <td><tt>group</tt></td>
+    <td>String</td>
+    <td>Group of the created files</td>
+    <td><tt>root</tt></td>
+  </tr>
+</table>
+
 Testing
 -------
 The kitchen includes a `boulder` server to run the integration tests with, so testing can run locally without interaction with the online API's.
