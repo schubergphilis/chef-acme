@@ -64,14 +64,13 @@ def acme_validate(authz)
   authz
 end
 
-def acme_cert(cn, key)
+def acme_cert(cn, key, alt_names = [])
   csr = OpenSSL::X509::Request.new
-
-  csr.subject = OpenSSL::X509::Name.new([
-    ['CN', cn, OpenSSL::ASN1::UTF8STRING]
-  ])
-  csr.public_key = key.public_key
-  csr.sign(key, OpenSSL::Digest::SHA256.new)
+  csr = Acme::Client::CertificateRequest.new(
+    common_name: cn,
+    names: [cn, alt_names].flatten.compact,
+    private_key: key
+  )
 
   acme_client.new_certificate(csr)
 end

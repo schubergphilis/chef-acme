@@ -110,7 +110,7 @@ action :create do
           when 'valid'
             begin
               newcert = acme_cert(new_resource.cn, mykey)
-            rescue Acme::Error => e
+            rescue Acme::Client::Error => e
               Chef::Log.error("[#{new_resource.cn}] Certificate request failed: #{e.message}")
             else
               file "#{new_resource.cn} SSL new crt" do

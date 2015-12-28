@@ -40,6 +40,7 @@ include_recipe 'acme_client::nginx'
 
 # Request the real certificate
 letsencrypt_certificate 'test.example.com' do
+  alt_names ['web.example.com', 'mail.example.com']
   fullchain '/etc/ssl/test.example.com.crt'
   chain     '/etc/ssl/test.example.com-chain.crt'
   key       '/etc/ssl/test.example.com.key'

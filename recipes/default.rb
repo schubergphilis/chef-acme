@@ -20,7 +20,7 @@
 
 chef_gem 'acme-client' do
   action :install
-  version '0.2.2'
+  version '0.2.4'
   compile_time true
 end
 
