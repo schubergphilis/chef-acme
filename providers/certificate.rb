@@ -133,7 +133,7 @@ action :create do
               end
             end
           else
-            Chef::Log.error("[#{new_resource.cn}] Domain validation failed")
+            Chef::Log.error("[#{new_resource.cn}] Domain validation failed: #{validation.verify_status}")
           end
         end
       end
