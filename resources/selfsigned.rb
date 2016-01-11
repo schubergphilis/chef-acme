@@ -26,5 +26,7 @@ attribute :cn,            :kind_of => String, :name_attribute => true
 attribute :crt,           :kind_of => String, :default => nil,   :required => true
 attribute :key,           :kind_of => String, :default => nil,   :required => true
 
+attribute :chain,         :kind_of => String, :default => nil
+
 attribute :owner,         :kind_of => String, :default => 'root'
 attribute :group,         :kind_of => String, :default => 'root'

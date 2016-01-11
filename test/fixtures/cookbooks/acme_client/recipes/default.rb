@@ -18,17 +18,7 @@
 # limitations under the License.
 #
 
-include_recipe 'yum'
 include_recipe 'letsencrypt'
-
-# nginx package is broken
-# https://www.centos.org/forums/viewtopic.php?f=47&t=55325
-yum_repository 'CentOS-CR' do
-  baseurl 'http://mirror.centos.org/centos/$releasever/cr/$basearch/'
-  gpgkey 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7'
-  enabled true
-  action :create
-end
 
 # Generate selfsigned certificate so nginx can start
 letsencrypt_selfsigned 'test.example.com' do

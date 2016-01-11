@@ -39,4 +39,13 @@ action :create do
     content lazy { self_signed_cert(new_resource.cn, OpenSSL::PKey::RSA.new(::File.read(new_resource.key))).to_pem }
     action  :create_if_missing
   end
+
+  file "#{new_resource.cn} SSL selfsigned chain" do
+    path    new_resource.chain
+    owner   new_resource.owner
+    group   new_resource.group
+    mode    00644
+    content lazy { self_signed_cert(new_resource.cn, OpenSSL::PKey::RSA.new(::File.read(new_resource.key))).to_pem }
+    action  :create_if_missing
+  end
 end
