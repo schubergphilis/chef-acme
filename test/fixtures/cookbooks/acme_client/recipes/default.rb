@@ -37,3 +37,10 @@ letsencrypt_certificate 'test.example.com' do
   wwwroot   node['nginx']['default_root']
   notifies  :reload, 'service[nginx]'
 end
+
+letsencrypt_certificate 'new.example.com' do
+  crt       '/etc/ssl/new.example.com.crt'
+  key       '/etc/ssl/new.example.com.key'
+  method    'http'
+  wwwroot   node['nginx']['default_root']
+end
