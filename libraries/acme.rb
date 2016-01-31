@@ -64,6 +64,24 @@ def acme_validate(authz)
   authz
 end
 
+def acme_validate_immediately(authz, method, tokenroot, auth_file)
+  tokenroot.run_action(:create)
+  auth_file.run_action(:create)
+  validate = authz.send(method.to_sym)
+  validate.request_verification
+
+  sleep 10
+  times = 0
+
+  while times <= 6
+    break unless validate.verify_status == 'pending'
+    times += 1
+    sleep 10
+  end
+
+  validate
+end
+
 def acme_cert(cn, key, alt_names = [])
   csr = OpenSSL::X509::Request.new
   csr = Acme::Client::CertificateRequest.new(
