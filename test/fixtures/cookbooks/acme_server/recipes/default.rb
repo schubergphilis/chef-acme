@@ -82,6 +82,7 @@ ruby_block 'boulder_limit' do
   block do
     limit = ::YAML.load ::File.read "#{boulderdir}/test/rate-limit-policies.yml"
     limit['certificatesPerName']['threshold'] = 999
+    limit['pendingAuthorizationsPerAccount']['threshold'] = 99
     ::File.write("#{boulderdir}/test/rate-limit-policies.yml", limit.to_yaml)
   end
 end
