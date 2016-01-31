@@ -59,6 +59,12 @@ Providers
     <td><tt>Name of the resource block</tt></td>
   </tr>
   <tr>
+    <td><tt>alt_names</tt></td>
+    <td>Array</td>
+    <td>The SAN names for the certificate</td>
+    <td><tt>[]</tt></td>
+  </tr>
+  <tr>
     <td><tt>crt</tt></td>
     <td>String</td>
     <td>File path to place the certificate</td>
@@ -126,6 +132,12 @@ Providers
     <td><tt>crt</tt></td>
     <td>String</td>
     <td>File path to place the certificate</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>chain</tt></td>
+    <td>String</td>
+    <td>File path to place the certificate chain</td>
     <td><tt>nil</tt></td>
   </tr>
   <tr>

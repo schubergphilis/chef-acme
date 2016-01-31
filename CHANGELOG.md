@@ -3,6 +3,10 @@ letsencrypt changelog
 
 This file is used to list changes made in each version of the letsencrypt cookbook.
 
+0.1.3
+-----
+- sawanoboly - Add SAN support
+
 0.1.2
 -----
 - obazoud - Improved logging
