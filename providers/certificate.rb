@@ -57,29 +57,12 @@ action :create do
 
       case authz.status
       when 'valid'
-        authz
-        next
-        newcert = acme_cert(new_resource.cn, mykey, new_resource.alt_names)
-
-        file "#{new_resource.cn} SSL new crt" do
-          path    new_resource.crt || new_resource.fullchain
-          owner   new_resource.owner
-          group   new_resource.group
-          content new_resource.crt.nil? ? newcert.fullchain_to_pem : newcert.to_pem
-          mode    00644
-          action  :create
+        case new_resource.method
+        when 'http'
+          authz.http01
+        else
+          Chef::Log.error("[#{new_resource.cn}] Invalid validation method '#{new_resource.method}'")
         end
-
-        file "#{new_resource.cn} SSL new chain" do
-          path    new_resource.chain
-          owner   new_resource.owner
-          group   new_resource.group
-          content newcert.chain_to_pem
-          not_if  { new_resource.chain.nil? }
-          mode    00644
-          action  :create
-        end
-
       when 'pending'
         case new_resource.method
         when 'http'

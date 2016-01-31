@@ -83,7 +83,6 @@ def acme_validate_immediately(authz, method, tokenroot, auth_file)
 end
 
 def acme_cert(cn, key, alt_names = [])
-  csr = OpenSSL::X509::Request.new
   csr = Acme::Client::CertificateRequest.new(
     common_name: cn,
     names: [cn, alt_names].flatten.compact,
