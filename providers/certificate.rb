@@ -38,8 +38,8 @@ action :create do
     mode      00400
     content   OpenSSL::PKey::RSA.new(2048).to_pem
     sensitive true
-    action    :create_if_missing
-  end
+    action    :nothing
+  end.run_action(:create_if_missing)
 
   mycert   = nil
   mykey    = OpenSSL::PKey::RSA.new ::File.read new_resource.key
@@ -133,7 +133,7 @@ action :create do
               end
             end
           else
-            Chef::Log.error("[#{new_resource.cn}] Domain validation failed")
+            Chef::Log.error("[#{new_resource.cn}] Domain validation failed: #{validation.verify_status}")
           end
         end
       end

@@ -48,3 +48,19 @@ end
 describe command('echo | openssl s_client -connect 0:443 2>&1 | openssl x509 -noout -serial') do
   its(:stdout) { should eq `openssl x509 -in /etc/ssl/test.example.com.crt -noout -serial` }
 end
+
+describe x509_certificate('/etc/ssl/new.example.com.crt') do
+  it { should be_certificate }
+  it { should have_purpose 'SSL server' }
+  it { should_not have_purpose 'SSL server CA' }
+  its(:keylength) { should be 2048 }
+  its(:validity_in_days) { should be > 30 }
+  its(:subject) { should eq '/CN=new.example.com' }
+  its(:issuer) { should eq '/CN=happy hacker fake CA' }
+end
+
+describe x509_private_key('/etc/ssl/new.example.com.key') do
+  it { should be_valid }
+  it { should_not be_encrypted }
+  it { should have_matching_certificate('/etc/ssl/new.example.com.crt') }
+end

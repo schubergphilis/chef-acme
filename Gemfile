@@ -1,7 +1,6 @@
 #
 # Author:: Thijs Houtenbos <thoutenbos@schubergphilis.com>
-# Cookbook:: acme_client
-# Recipe:: nginx
+# Cookbook:: letsencrypt
 #
 # Copyright 2015 Schuberg Philis
 #
@@ -18,23 +17,32 @@
 # limitations under the License.
 #
 
-# Install a webserver
-include_recipe 'nginx'
+source 'https://rubygems.org'
 
-cookbook_file "#{node['nginx']['dir']}/sites-available/test" do
-  source 'nginx-test.conf'
+group :test do
+  gem 'rake'
+  gem 'berkshelf', '~> 4.0'
 end
 
-directory node['nginx']['default_root'] do
-  owner 'root'
-  group 'root'
-  recursive true
+group :style do
+  gem 'foodcritic', '~> 4.0.0'
+  gem 'rubocop', '~> 0.34.0'
 end
 
-cookbook_file "#{node['nginx']['default_root']}/index.html" do
-  source 'index.html'
+group :integration do
+  gem 'test-kitchen', '~> 1.2'
 end
 
-nginx_site 'test' do
-  timing :immediately
+group :integration_docker do
+  gem 'kitchen-docker', '~> 2.1'
+end
+
+group :integration_vagrant do
+  gem 'vagrant-wrapper', '~> 2.0'
+  gem 'kitchen-vagrant', '~> 0.10'
+end
+
+group :integration_cloud do
+  gem 'kitchen-ec2', '~> 0.8'
+  gem 'kitchen-digitalocean', '~> 0.8'
 end

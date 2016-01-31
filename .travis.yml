@@ -1,7 +1,6 @@
 #
 # Author:: Thijs Houtenbos <thoutenbos@schubergphilis.com>
-# Cookbook:: acme_client
-# Recipe:: nginx
+# Cookbook:: letsencrypt
 #
 # Copyright 2015 Schuberg Philis
 #
@@ -18,23 +17,16 @@
 # limitations under the License.
 #
 
-# Install a webserver
-include_recipe 'nginx'
+rvm:
+- 2.2
 
-cookbook_file "#{node['nginx']['dir']}/sites-available/test" do
-  source 'nginx-test.conf'
-end
+sudo: required
+services: docker
 
-directory node['nginx']['default_root'] do
-  owner 'root'
-  group 'root'
-  recursive true
-end
+before_install: curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chefdk -v 0.8.0
+install: chef exec bundle install --jobs=3 --retry=3 --without='doc integration_vagrant integration_cloud guard'
 
-cookbook_file "#{node['nginx']['default_root']}/index.html" do
-  source 'index.html'
-end
+# https://github.com/zuazo/kitchen-in-travis-native/issues/1#issuecomment-142455888
+before_script: sudo iptables -L DOCKER || sudo iptables -N DOCKER
 
-nginx_site 'test' do
-  timing :immediately
-end
+script: travis_retry chef exec bundle exec rake integration[default-centos-7]

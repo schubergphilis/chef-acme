@@ -1,5 +1,9 @@
 letsencrypt cookbook
 =============
+
+[![Build Status](https://travis-ci.org/schubergphilis/letsencrypt.svg)](https://travis-ci.org/schubergphilis/letsencrypt)
+[![Cookbook Version](https://img.shields.io/cookbook/v/letsencrypt.svg)](https://supermarket.chef.io/cookbooks/letsencrypt)
+
 Automatically get/renew free and trusted certificates from Let's Encrypt (letsencrypt.org).
 
 Attributes

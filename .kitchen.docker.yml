@@ -1,7 +1,6 @@
 #
 # Author:: Thijs Houtenbos <thoutenbos@schubergphilis.com>
-# Cookbook:: acme_client
-# Recipe:: nginx
+# Cookbook:: letsencrypt
 #
 # Copyright 2015 Schuberg Philis
 #
@@ -18,23 +17,28 @@
 # limitations under the License.
 #
 
-# Install a webserver
-include_recipe 'nginx'
+---
+driver:
+  name: docker
+  use_sudo: false
+  privileged: true
 
-cookbook_file "#{node['nginx']['dir']}/sites-available/test" do
-  source 'nginx-test.conf'
-end
+platforms:
+- name: centos-7
+  driver_config:
+    image: centos:7
+    platform: rhel
+    run_command: /usr/lib/systemd/systemd
+    provision_command:
+      - /bin/yum install -y initscripts net-tools wget
 
-directory node['nginx']['default_root'] do
-  owner 'root'
-  group 'root'
-  recursive true
-end
-
-cookbook_file "#{node['nginx']['default_root']}/index.html" do
-  source 'index.html'
-end
-
-nginx_site 'test' do
-  timing :immediately
-end
+suites:
+- name: default
+  run_list:
+  - recipe[acme_server]
+  - recipe[acme_client]
+  attributes:
+    letsencrypt:
+      endpoint: http://127.0.0.1:4000
+      contact:
+      - mailto:admin@example.com
