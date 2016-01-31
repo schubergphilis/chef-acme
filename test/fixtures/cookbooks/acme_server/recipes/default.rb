@@ -78,6 +78,14 @@ ruby_block 'boulder_config' do
   end
 end
 
+ruby_block 'boulder_limit' do
+  block do
+    limit = ::YAML.load ::File.read "#{boulderdir}/test/rate-limit-policies.yml"
+    limit['certificatesPerName']['threshold'] = 999
+    ::File.write("#{boulderdir}/test/rate-limit-policies.yml", limit.to_yaml)
+  end
+end
+
 execute 'boulder_setup' do
   cwd boulderdir
   command 'source /etc/profile.d/golang.sh && ./test/setup.sh 2>&1 && touch setup.done'
