@@ -49,6 +49,12 @@ describe command('echo | openssl s_client -connect 0:443 2>&1 | openssl x509 -no
   its(:stdout) { should eq `openssl x509 -in /etc/ssl/test.example.com.crt -noout -serial` }
 end
 
+describe command('openssl x509 -in /etc/ssl/test.example.com.crt -noout -text') do
+  its(:stdout) { should match /DNS:test.example.com/ }
+  its(:stdout) { should match /DNS:web.example.com/ }
+  its(:stdout) { should match /DNS:mail.example.com/ }
+end
+
 describe x509_certificate('/etc/ssl/new.example.com.crt') do
   it { should be_certificate }
   it { should have_purpose 'SSL server' }

@@ -52,89 +52,75 @@ action :create do
   end
 
   if mycert.nil? || mycert.not_after <= renew_at
-    authz = acme_authz new_resource.cn
+    all_validations = [new_resource.cn, new_resource.alt_names].flatten.compact.map do |domain|
+      authz = acme_authz domain
 
-    case authz.status
-    when 'valid'
-      newcert = acme_cert(new_resource.cn, mykey)
-
-      file "#{new_resource.cn} SSL new crt" do
-        path    new_resource.crt || new_resource.fullchain
-        owner   new_resource.owner
-        group   new_resource.group
-        content new_resource.crt.nil? ? newcert.fullchain_to_pem : newcert.to_pem
-        mode    00644
-        action  :create
-      end
-
-      file "#{new_resource.cn} SSL new chain" do
-        path    new_resource.chain
-        owner   new_resource.owner
-        group   new_resource.group
-        content newcert.chain_to_pem
-        not_if  { new_resource.chain.nil? }
-        mode    00644
-        action  :create
-      end
-
-    when 'pending'
-      case new_resource.method
-      when 'http'
-        tokenpath = "#{new_resource.wwwroot}/#{authz.http01.filename}"
-
-        directory ::File.dirname(tokenpath) do
-          owner     new_resource.owner
-          group     new_resource.group
-          mode      00755
-          recursive true
+      case authz.status
+      when 'valid'
+        case new_resource.method
+        when 'http'
+          authz.http01
+        else
+          Chef::Log.error("[#{new_resource.cn}] Invalid validation method '#{new_resource.method}'")
         end
+      when 'pending'
+        case new_resource.method
+        when 'http'
+          tokenpath = "#{new_resource.wwwroot}/#{authz.http01.filename}"
 
-        file tokenpath do
-          owner   new_resource.owner
-          group   new_resource.group
-          mode    00644
-          content authz.http01.file_content
-        end
-
-        validate = authz.http01
-
-      else
-        Chef::Log.error("[#{new_resource.cn}] Invalid validation method '#{new_resource.method}'")
-      end
-
-      ruby_block "validate domain #{new_resource.cn}" do
-        block do
-          validation = acme_validate validate
-
-          case validation.verify_status
-          when 'valid'
-            begin
-              newcert = acme_cert(new_resource.cn, mykey)
-            rescue Acme::Error => e
-              Chef::Log.error("[#{new_resource.cn}] Certificate request failed: #{e.message}")
-            else
-              file "#{new_resource.cn} SSL new crt" do
-                path    new_resource.crt || new_resource.fullchain
-                owner   new_resource.owner
-                group   new_resource.group
-                content new_resource.crt.nil? ? newcert.fullchain_to_pem : newcert.to_pem
-                mode    00644
-                action  :create
-              end
-
-              file "#{new_resource.cn} SSL new chain" do
-                path    new_resource.chain
-                owner   new_resource.owner
-                group   new_resource.group
-                content newcert.chain_to_pem
-                not_if  { new_resource.chain.nil? }
-                mode    00644
-                action  :create
-              end
-            end
-          else
-            Chef::Log.error("[#{new_resource.cn}] Domain validation failed: #{validation.verify_status}")
+          tokenroot = directory ::File.dirname(tokenpath) do
+            owner     new_resource.owner
+            group     new_resource.group
+            mode      00755
+            recursive true
           end
+
+          auth_file = file tokenpath do
+            owner   new_resource.owner
+            group   new_resource.group
+            mode    00644
+            content authz.http01.file_content
+          end
+          validation = acme_validate_immediately(authz, 'http01', tokenroot, auth_file)
+
+          validation
+
+        else
+          Chef::Log.error("[#{new_resource.cn}] Invalid validation method '#{new_resource.method}'")
+        end
+      end
+    end
+
+    ruby_block "create certificate for #{new_resource.cn}" do
+      block do
+
+        if (all_validations.map {|authz| authz.status == 'valid'}).all?
+          begin
+            newcert = acme_cert(new_resource.cn, mykey, new_resource.alt_names)
+          rescue Acme::Client::Error => e
+            Chef::Log.error("[#{new_resource.cn}] Certificate request failed: #{e.message}")
+          else
+            file "#{new_resource.cn} SSL new crt" do
+              path    new_resource.crt || new_resource.fullchain
+              owner   new_resource.owner
+              group   new_resource.group
+              content new_resource.crt.nil? ? newcert.fullchain_to_pem : newcert.to_pem
+              mode    00644
+              action  :create
+            end
+
+            file "#{new_resource.cn} SSL new chain" do
+              path    new_resource.chain
+              owner   new_resource.owner
+              group   new_resource.group
+              content newcert.chain_to_pem
+              not_if  { new_resource.chain.nil? }
+              mode    00644
+              action  :create
+            end
+          end
+        else
+          Chef::Log.error("[#{new_resource.cn}] Domain validation failed: #{validation.verify_status}")
         end
       end
     end
