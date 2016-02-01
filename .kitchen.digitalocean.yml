@@ -1,0 +1,7 @@
+driver:
+  name: digitalocean
+  private_networking: false
+  size: 2gb
+
+transport:
+  name: rsync
