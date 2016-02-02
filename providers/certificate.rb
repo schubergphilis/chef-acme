@@ -93,8 +93,7 @@ action :create do
 
     ruby_block "create certificate for #{new_resource.cn}" do
       block do
-
-        if (all_validations.map {|authz| authz.status == 'valid'}).all?
+        if (all_validations.map { |authz| authz.status == 'valid' }).all?
           begin
             newcert = acme_cert(new_resource.cn, mykey, new_resource.alt_names)
           rescue Acme::Client::Error => e
