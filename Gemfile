@@ -45,4 +45,5 @@ end
 group :integration_cloud do
   gem 'kitchen-ec2', '~> 0.8'
   gem 'kitchen-digitalocean', '~> 0.8'
+  gem 'kitchen-sync'
 end

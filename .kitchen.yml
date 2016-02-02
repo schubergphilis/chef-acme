@@ -26,8 +26,15 @@ driver:
 platforms:
 - name: centos-7
   driver:
-    box: opscode-centos-7.1
-    image: centos-7.1-x64
+    box: opscode-centos-7.1 # virtualbox
+    image: centos-7-0-x64   # digitalocean
+- name: ubuntu-14.04
+  run_list:
+    - recipe[apt]
+  driver:
+    box: bento/ubuntu-14.04
+    image: ubuntu-14-04-x64
+
 
 provisioner:
   name: chef_zero

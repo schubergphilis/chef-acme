@@ -20,17 +20,34 @@
 
 package 'git'
 package 'screen'
-package 'libtool-ltdl-devel'
 package 'initscripts'
 package 'logrotate'
 package 'tar'
 package 'wget'
 
-yum_repository 'mariadb-10.0' do
-  baseurl 'https://downloads.mariadb.com/files/MariaDB/yum/10.0/centos/7/x86_64'
-  gpgkey 'https://yum.mariadb.org/RPM-GPG-KEY-MariaDB'
-  enabled true
-  action :create
+case node['platform']
+when 'ubuntu'
+  package 'libtool'
+
+  apt_repository 'mariadb-10.0' do
+    uri 'http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.0/ubuntu'
+    arch 'amd64,i386'
+    components ['main']
+    distribution 'trusty'
+    key '0xcbcb082a1bb943db'
+    keyserver 'keyserver.ubuntu.com'
+    action :add
+    deb_src true
+  end
+else
+  package 'libtool-ltdl-devel'
+
+  yum_repository 'mariadb-10.0' do
+    baseurl 'https://downloads.mariadb.com/files/MariaDB/yum/10.0/centos/7/x86_64'
+    gpgkey 'https://yum.mariadb.org/RPM-GPG-KEY-MariaDB'
+    enabled true
+    action :create
+  end
 end
 
 include_recipe 'build-essential'
@@ -87,16 +104,17 @@ ruby_block 'boulder_limit' do
   end
 end
 
-execute 'boulder_setup' do
+script 'boulder_setup' do
+  interpreter 'bash'
   cwd boulderdir
-  command 'source /etc/profile.d/golang.sh && ./test/setup.sh 2>&1 && touch setup.done'
+  code 'source /etc/profile.d/golang.sh && ./test/setup.sh 2>&1 && touch setup.done'
   creates "#{boulderdir}/setup.done"
 end
 
 bash 'run_boulder' do
   cwd boulderdir
-  code 'source /etc/profile.d/golang.sh && /bin/screen -LdmS boulder ./start.py'
-  not_if '/bin/screen -list boulder | /bin/grep 1\ Socket\ in'
+  code 'source /etc/profile.d/golang.sh && screen -LdmS boulder ./start.py'
+  not_if 'screen -list boulder | /bin/grep 1\ Socket\ in'
 end
 
 ruby_block 'wait_for_bootstrap' do
