@@ -119,7 +119,10 @@ action :create do
             end
           end
         else
-          Chef::Log.error("[#{new_resource.cn}] Domain validation failed: #{validation.verify_status}")
+          Chef::Log.error("[#{new_resource.cn}] Validation failed for domains:")
+          all_validations.map { |authz| authz.status != 'valid' }.each do |name|
+            Chef::Log.error("- #{name}")
+          end
         end
       end
     end
