@@ -83,6 +83,10 @@ action :create do
           end
           validation = acme_validate_immediately(authz, 'http01', tokenroot, auth_file)
 
+          if validation.status != 'valid'
+            Chef::Log.error("[#{new_resource.cn}] Validation failed for domain #{authz.domain}")
+          end
+
           validation
 
         else
@@ -119,10 +123,7 @@ action :create do
             end
           end
         else
-          Chef::Log.error("[#{new_resource.cn}] Validation failed for domains:")
-          all_validations.map { |authz| authz.status != 'valid' }.each do |name|
-            Chef::Log.error("- #{name}")
-          end
+          Chef::Log.error("[#{new_resource.cn}] Validation failed, unable to request certificate")
         end
       end
     end
