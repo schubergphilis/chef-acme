@@ -3,6 +3,12 @@ letsencrypt changelog
 
 This file is used to list changes made in each version of the letsencrypt cookbook.
 
+0.1.4
+-----
+- patcon - spin-off the boulder test cookbook
+- patcon - add Ubuntu support
+- thoutenbos - various improvements
+
 0.1.3
 -----
 - sawanoboly - Add SAN support
