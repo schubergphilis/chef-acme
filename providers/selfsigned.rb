@@ -46,6 +46,7 @@ action :create do
     group   new_resource.group
     mode    00644
     content lazy { self_signed_cert(new_resource.cn, OpenSSL::PKey::RSA.new(::File.read(new_resource.key))).to_pem }
+    not_if  { new_resource.chain.nil? }
     action  :create_if_missing
   end
 end
