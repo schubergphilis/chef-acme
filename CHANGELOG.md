@@ -3,6 +3,10 @@ letsencrypt changelog
 
 This file is used to list changes made in each version of the letsencrypt cookbook.
 
+0.1.5
+-----
+- thoutenbos - fix selfsigned chain
+
 0.1.4
 -----
 - patcon - spin-off the boulder test cookbook
