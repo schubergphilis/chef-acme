@@ -112,6 +112,24 @@ Providers
     <td>Path to the wwwroot of the domain</td>
     <td><tt>/var/www</tt></td>
   </tr>
+  <tr>
+    <td><tt>ignore_failure</tt></td>
+    <td>Boolean</td>
+    <td>Whether to continue chef run if issuance fails</td>
+    <td><tt>false</tt></td>
+  </tr>
+  <tr>
+    <td><tt>retries</tt></td>
+    <td>Integer</td>
+    <td>Number of times to catch exceptions and retry</td>
+    <td><tt>0</tt></td>
+  </tr>
+  <tr>
+    <td><tt>retry_delay</tt></td>
+    <td>Integer</td>
+    <td>Number of seconds to wait between retries</td>
+    <td><tt>2</tt></td>
+  </tr>
 </table>
 
 ### selfsigned

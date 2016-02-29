@@ -3,6 +3,8 @@ letsencrypt changelog
 
 This file is used to list changes made in each version of the letsencrypt cookbook.
 
+- acoulton - fail chef run if certificate not issued, unless `ignore_failure` resource attribute set
+
 0.1.5
 -----
 - thoutenbos - fix selfsigned chain
