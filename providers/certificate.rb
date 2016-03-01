@@ -22,13 +22,11 @@ use_inline_resources
 
 action :create do
   unless new_resource.crt.nil? ^ new_resource.fullchain.nil?
-    Chef::Log.error("[#{new_resource.cn}] No valid certificate output specified, only one of the crt/fullchain propery is permitted and required")
-    return
+    fail "[#{new_resource.cn}] No valid certificate output specified, only one of the crt/fullchain propery is permitted and required"
   end
 
   if new_resource.key.nil?
-    Chef::Log.error("[#{new_resource.cn}] No valid key output specified, the key propery is required")
-    return
+    fail "[#{new_resource.cn}] No valid key output specified, the key propery is required"
   end
 
   file "#{new_resource.cn} SSL key" do
@@ -61,7 +59,7 @@ action :create do
         when 'http'
           authz.http01
         else
-          Chef::Log.error("[#{new_resource.cn}] Invalid validation method '#{new_resource.method}'")
+          fail "[#{new_resource.cn}] Invalid validation method '#{new_resource.method}'"
         end
       when 'pending'
         case new_resource.method
@@ -84,13 +82,13 @@ action :create do
           validation = acme_validate_immediately(authz, 'http01', tokenroot, auth_file)
 
           if validation.status != 'valid'
-            Chef::Log.error("[#{new_resource.cn}] Validation failed for domain #{authz.domain}")
+            fail "[#{new_resource.cn}] Validation failed for domain #{authz.domain}"
           end
 
           validation
 
         else
-          Chef::Log.error("[#{new_resource.cn}] Invalid validation method '#{new_resource.method}'")
+          fail "[#{new_resource.cn}] Invalid validation method '#{new_resource.method}'"
         end
       end
     end
@@ -101,7 +99,7 @@ action :create do
           begin
             newcert = acme_cert(new_resource.cn, mykey, new_resource.alt_names)
           rescue Acme::Client::Error => e
-            Chef::Log.error("[#{new_resource.cn}] Certificate request failed: #{e.message}")
+            fail "[#{new_resource.cn}] Certificate request failed: #{e.message}"
           else
             file "#{new_resource.cn} SSL new crt" do
               path    new_resource.crt || new_resource.fullchain
@@ -123,7 +121,7 @@ action :create do
             end
           end
         else
-          Chef::Log.error("[#{new_resource.cn}] Validation failed, unable to request certificate")
+          fail "[#{new_resource.cn}] Validation failed, unable to request certificate"
         end
       end
     end
