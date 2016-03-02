@@ -9,9 +9,9 @@ Automatically get/renew free and trusted certificates from Let's Encrypt (letsen
 Attributes
 ----------
 ### default
-* `node['letsencrypt']['contact']` - Contact information, default empty.
-* `node['letsencrypt']['endpoint']` - ACME server endpoint, default 'https://acme-staging.api.letsencrypt.org'. Set to `https://acme-v01.api.letsencrypt.org` for real certificates.
-* `node['letsencrypt']['renew']` - Days before the certificate expires at which the certificate will be renewed, default 30.
+* `node['letsencrypt']['contact']` - Contact information, default empty. Set to `mailto:your@email.com`.
+* `node['letsencrypt']['endpoint']` - ACME server endpoint, default `https://acme-staging.api.letsencrypt.org`. Set to `https://acme-v01.api.letsencrypt.org` for real certificates.
+* `node['letsencrypt']['renew']` - Days before the certificate expires at which the certificate will be renewed, default `30`.
 
 Recipes
 -------
