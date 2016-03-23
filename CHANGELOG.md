@@ -3,6 +3,8 @@ letsencrypt changelog
 
 This file is used to list changes made in each version of the letsencrypt cookbook.
 
+0.1.6
+-----
 - funzoneq - Add verification IP for firewalling purposes
 - acoulton - fail chef run if certificate not issued, unless `ignore_failure` resource attribute set
 
