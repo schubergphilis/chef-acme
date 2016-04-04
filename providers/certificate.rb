@@ -101,24 +101,22 @@ action :create do
           rescue Acme::Client::Error => e
             fail "[#{new_resource.cn}] Certificate request failed: #{e.message}"
           else
-            file "#{new_resource.cn} SSL new crt" do
-              path    new_resource.crt || new_resource.fullchain
-              owner   new_resource.owner
-              group   new_resource.group
-              content new_resource.crt.nil? ? newcert.fullchain_to_pem : newcert.to_pem
-              mode    00644
-              action  :create
-            end
+            Chef::Resource::File.new("#{new_resource.cn} SSL new crt", run_context).tap do |f|
+              f.path    new_resource.crt || new_resource.fullchain
+              f.owner   new_resource.owner
+              f.group   new_resource.group
+              f.content new_resource.crt.nil? ? newcert.fullchain_to_pem : newcert.to_pem
+              f.mode    00644
+            end.run_action :create
 
-            file "#{new_resource.cn} SSL new chain" do
-              path    new_resource.chain
-              owner   new_resource.owner
-              group   new_resource.group
-              content newcert.chain_to_pem
-              not_if  { new_resource.chain.nil? }
-              mode    00644
-              action  :create
-            end
+            Chef::Resource::File.new("#{new_resource.cn} SSL new chain", run_context).tap do |f|
+              f.path    new_resource.chain
+              f.owner   new_resource.owner
+              f.group   new_resource.group
+              f.content newcert.chain_to_pem
+              f.not_if  { new_resource.chain.nil? }
+              f.mode    00644
+            end.run_action :create
           end
         else
           fail "[#{new_resource.cn}] Validation failed, unable to request certificate"
