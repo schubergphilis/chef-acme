@@ -184,7 +184,8 @@ Example
 -------
 To generate a certificate for an apache2 website you can use code like this:
 
-    node.set['letsencrypt']['contact'] = [ 'mailto:me@example.com' ] # Note the mailto:
+    # Set up contact information. Note te mailto: notation
+    node.set['letsencrypt']['contact'] = [ 'mailto:me@example.com' ] 
     # Real certificates please...
     node.set['letsencrypt']['endpoint'] = 'https://acme-v01.api.letsencrypt.org' 
 
