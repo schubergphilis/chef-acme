@@ -180,6 +180,46 @@ Providers
   </tr>
 </table>
 
+Example
+-------
+To generate a certificate for an apache2 website you can use code like this:
+
+    node.set['letsencrypt']['contact'] = [ 'mailto:me@example.com' ] # Note the mailto:
+    # Real certificates please...
+    node.set['letsencrypt']['endpoint'] = 'https://acme-v01.api.letsencrypt.org' 
+
+    site="example.com"
+    sans=Array[ "www.#{site}" ]
+
+    # Set up your server here...
+
+    # Let's letsencrypt
+
+    # Generate a self-signed if we don't have a cert to prevent bootstrap problems
+    letsencrypt_selfsigned "#{site}" do
+        crt     "/etc/httpd/ssl/#{site}.crt"
+        key     "/etc/httpd/ssl/#{site}.key"
+        chain    "/etc/httpd/ssl/#{site}.pem"
+        owner   "apache"
+        group   "apache"
+        notifies :restart, "service[apache2]", :immediate
+        not_if do
+            # Only generate a slef-signed cert if needed
+            ::File.exists?("/etc/httpd/ssl/#{site}.crt")
+        end
+    end
+
+    # Get and auto-renew the certificate from letsencrypt
+    letsencrypt_certificate "#{site}" do
+        crt      "/etc/httpd/ssl/#{site}.crt"
+        key      "/etc/httpd/ssl/#{site}.key"
+        chain    "/etc/httpd/ssl/#{site}.pem"
+        method   "http"
+        wwwroot  "/var/www/#{site}/htdocs/"
+        notifies :restart, "service[apache2]"
+        alt_names sans
+    end
+
 Testing
 -------
 The kitchen includes a `boulder` server to run the integration tests with, so testing can run locally without interaction with the online API's.
@@ -196,3 +236,5 @@ Contributing
 License and Authors
 -------------------
 Authors: Thijs Houtenbos <thoutenbos@schubergphilis.com>
+Contributors:
+* Frank Breedijk <fbreedijk@schubergphilis.com>
