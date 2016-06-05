@@ -10,7 +10,7 @@ Attributes
 ----------
 ### default
 * `node['letsencrypt']['contact']` - Contact information, default empty. Set to `mailto:your@email.com`.
-* `node['letsencrypt']['endpoint']` - ACME server endpoint, default `https://acme-staging.api.letsencrypt.org`. Set to `https://acme-v01.api.letsencrypt.org` for real certificates.
+* `node['letsencrypt']['endpoint']` - ACME server endpoint, default `https://acme-v01.api.letsencrypt.org`. Set to `https://acme-staging.api.letsencrypt.org` if you want to use the letsencrypt staging environment and corresponding certificates.
 * `node['letsencrypt']['renew']` - Days before the certificate expires at which the certificate will be renewed, default `30`.
 * `node['letsencrypt']['source_ips']` - IP addresses used by letsencrypt to verify the TLS certificates, it will change over time. This attribute is for firewall purposes. Allow these IPs for HTTP (tcp/80).
 * `node['letsencrypt']['private_key']` - Private key content of registered account.
