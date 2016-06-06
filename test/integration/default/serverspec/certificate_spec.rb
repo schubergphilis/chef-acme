@@ -27,7 +27,7 @@ describe x509_certificate('/etc/ssl/test.example.com.crt') do
   it { should_not have_purpose 'SSL server CA' }
   its(:keylength) { should be 2048 }
   its(:validity_in_days) { should be > 30 }
-  its(:subject) { should eq '/CN=test.example.com' }
+  its(:subject) { should match '/CN=test.example.com/' }
   its(:issuer) { should eq '/CN=happy hacker fake CA' }
 end
 
@@ -61,7 +61,7 @@ describe x509_certificate('/etc/ssl/new.example.com.crt') do
   it { should_not have_purpose 'SSL server CA' }
   its(:keylength) { should be 2048 }
   its(:validity_in_days) { should be > 30 }
-  its(:subject) { should eq '/CN=new.example.com' }
+  its(:subject) { should match '/CN=new.example.com/' }
   its(:issuer) { should eq '/CN=happy hacker fake CA' }
 end
 

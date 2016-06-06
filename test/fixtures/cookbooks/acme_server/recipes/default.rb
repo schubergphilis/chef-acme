@@ -18,10 +18,4 @@
 # limitations under the License.
 #
 
-# https://github.com/letsencrypt/boulder/pull/1071
-bash 'set_hosts' do
-  code '/bin/echo 127.0.0.1 localhost > /etc/hosts'
-  only_if { platform? 'centos' }
-end
-
 include_recipe 'letsencrypt-boulder-server'
