@@ -18,4 +18,19 @@
 # limitations under the License.
 #
 
+file 'hosts' do
+  path '/etc/hosts'
+  atomic_update false
+  content "127.0.0.1\tlocalhost boulder boulder-rabbitmq boulder-mysql"
+  only_if { platform? 'centos' }
+end
+
+chef_gem 'chef-rewind'
+require 'chef/rewind'
+
 include_recipe 'letsencrypt-boulder-server'
+
+# awaiting https://github.com/customink-webops/hostsfile/pull/78
+rewind hostsfile_entry: '127.0.0.1' do
+  action :nothing
+end
