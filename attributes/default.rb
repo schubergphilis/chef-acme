@@ -19,7 +19,7 @@
 #
 
 default['letsencrypt']['contact']     = []
-default['letsencrypt']['endpoint']    = 'https://acme-staging.api.letsencrypt.org'
+default['letsencrypt']['endpoint']    = 'https://acme-v01.api.letsencrypt.org'
 default['letsencrypt']['renew']       = 30
 default['letsencrypt']['source_ips']  = ['66.133.109.36']
 
