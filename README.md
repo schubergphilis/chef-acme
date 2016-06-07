@@ -205,7 +205,7 @@ To generate a certificate for an apache2 website you can use code like this:
         group   "apache"
         notifies :restart, "service[apache2]", :immediate
         not_if do
-            # Only generate a slef-signed cert if needed
+            # Only generate a self-signed cert if needed
             ::File.exists?("/etc/httpd/ssl/#{site}.crt")
         end
     end
