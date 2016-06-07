@@ -237,5 +237,3 @@ Contributing
 License and Authors
 -------------------
 Authors: Thijs Houtenbos <thoutenbos@schubergphilis.com>
-Contributors:
-* Frank Breedijk <fbreedijk@schubergphilis.com>
