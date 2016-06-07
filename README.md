@@ -47,138 +47,31 @@ A working example can be found in the included `acme_client` test cookbook.
 Providers
 ---------
 ### certificate
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><tt>cn</tt></td>
-    <td>String</td>
-    <td>The common name for the certificate</td>
-    <td><tt>Name of the resource block</tt></td>
-  </tr>
-  <tr>
-    <td><tt>alt_names</tt></td>
-    <td>Array</td>
-    <td>The SAN names for the certificate</td>
-    <td><tt>[]</tt></td>
-  </tr>
-  <tr>
-    <td><tt>crt</tt></td>
-    <td>String</td>
-    <td>File path to place the certificate</td>
-    <td><tt>nil</tt></td>
-  </tr>
-  <tr>
-    <td><tt>key</tt></td>
-    <td>String</td>
-    <td>File path to place the private key</td>
-    <td><tt>nil</tt></td>
-  </tr>
-  <tr>
-    <td><tt>chain</tt></td>
-    <td>String</td>
-    <td>File path to place the certificate chain</td>
-    <td><tt>nil</tt></td>
-  </tr>
-  <tr>
-    <td><tt>fullchain</tt></td>
-    <td>String</td>
-    <td>File path to place the certificate including the chain</td>
-    <td><tt>nil</tt></td>
-  </tr>
-  <tr>
-    <td><tt>owner</tt></td>
-    <td>String</td>
-    <td>Owner of the created files</td>
-    <td><tt>root</tt></td>
-  </tr>
-  <tr>
-    <td><tt>group</tt></td>
-    <td>String</td>
-    <td>Group of the created files</td>
-    <td><tt>root</tt></td>
-  </tr>
-  <tr>
-    <td><tt>method</tt></td>
-    <td>String</td>
-    <td>Validation method</td>
-    <td><tt>http</tt></td>
-  </tr>
-  <tr>
-    <td><tt>wwwroot</tt></td>
-    <td>String</td>
-    <td>Path to the wwwroot of the domain</td>
-    <td><tt>/var/www</tt></td>
-  </tr>
-  <tr>
-    <td><tt>ignore_failure</tt></td>
-    <td>Boolean</td>
-    <td>Whether to continue chef run if issuance fails</td>
-    <td><tt>false</tt></td>
-  </tr>
-  <tr>
-    <td><tt>retries</tt></td>
-    <td>Integer</td>
-    <td>Number of times to catch exceptions and retry</td>
-    <td><tt>0</tt></td>
-  </tr>
-  <tr>
-    <td><tt>retry_delay</tt></td>
-    <td>Integer</td>
-    <td>Number of seconds to wait between retries</td>
-    <td><tt>2</tt></td>
-  </tr>
-</table>
+| Property         | Type    | Default  | Description                                            |
+|  ---             |  ---    |  ---     |  ---                                                   |
+| `cn`             | string  | _name_   | The common name for the certificate                    |
+| `alt_names`      | array   | []       | The common name for the certificate                    |
+| `crt`            | string  | nil      | File path to place the certificate                     |
+| `key`            | string  | nil      | File path to place the private key                     |
+| `chain`          | string  | nil      | File path to place the certificate chain               |
+| `fullchain`      | string  | nil      | File path to place the certificate including the chain |
+| `owner`          | string  | root     | Owner of the created files                             |
+| `group`          | string  | root     | Group of the created files                             |
+| `method`         | string  | http     | Validation method                                      |
+| `wwwroot`        | string  | /var/www | Path to the wwwroot of the domain                      |
+| `ignore_failure` | boolean | false    | Whether to continue chef run if issuance fails         |
+| `retries`        | integer | 0        | Number of times to catch exceptions and retry          |
+| `retry_delay`    | integer | 2        | Number of seconds to wait between retries              |
 
 ### selfsigned
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><tt>cn</tt></td>
-    <td>String</td>
-    <td>The common name for the certificate</td>
-    <td><tt>Name of the resource block</tt></td>
-  </tr>
-  <tr>
-    <td><tt>crt</tt></td>
-    <td>String</td>
-    <td>File path to place the certificate</td>
-    <td><tt>nil</tt></td>
-  </tr>
-  <tr>
-    <td><tt>chain</tt></td>
-    <td>String</td>
-    <td>File path to place the certificate chain</td>
-    <td><tt>nil</tt></td>
-  </tr>
-  <tr>
-    <td><tt>key</tt></td>
-    <td>String</td>
-    <td>File path to place the private key</td>
-    <td><tt>nil</tt></td>
-  </tr>
-  <tr>
-    <td><tt>owner</tt></td>
-    <td>String</td>
-    <td>Owner of the created files</td>
-    <td><tt>root</tt></td>
-  </tr>
-  <tr>
-    <td><tt>group</tt></td>
-    <td>String</td>
-    <td>Group of the created files</td>
-    <td><tt>root</tt></td>
-  </tr>
-</table>
+| Property         | Type    | Default  | Description                                            |
+|  ---             |  ---    |  ---     |  ---                                                   |
+| `cn`             | string  | _name_   | The common name for the certificate                    |
+| `crt`            | string  | nil      | File path to place the certificate                     |
+| `key`            | string  | nil      | File path to place the private key                     |
+| `chain`          | string  | nil      | File path to place the certificate chain               |
+| `owner`          | string  | root     | Owner of the created files                             |
+| `group`          | string  | root     | Group of the created files                             |
 
 Example
 -------
