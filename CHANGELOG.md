@@ -3,6 +3,13 @@ letsencrypt changelog
 
 This file is used to list changes made in each version of the letsencrypt cookbook.
 
+1.0.0
+-----
+seccubus - Make production the default end-point
+seccubus - Add apache2 example
+thoutenbos - Fix for chef-client v11 compatibility
+thoutenbos - Fix integration tests
+
 0.1.7
 -----
 - glaszig - Use chef api inside ruby_block
