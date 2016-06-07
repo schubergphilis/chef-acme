@@ -38,6 +38,8 @@ suites:
   - recipe[acme_server]
   - recipe[acme_client]
   attributes:
+    boulder:
+      revision: 2d33a9900cafe82993744fe73bd341fe47df2171
     letsencrypt:
       endpoint: http://127.0.0.1:4000
       contact:
