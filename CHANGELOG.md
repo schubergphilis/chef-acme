@@ -3,6 +3,12 @@ letsencrypt changelog
 
 This file is used to list changes made in each version of the letsencrypt cookbook.
 
+1.0.1
+-----
+thoutenbos - Work around gem dependency problems
+thoutenbos - Rubocop fixes
+thoutenbos - Improve the example
+
 1.0.0
 -----
 seccubus - Make production the default end-point
