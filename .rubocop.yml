@@ -22,7 +22,7 @@ MethodLength:
   Enabled: false
 SignalException:
   Enabled: false
-TrailingComma:
+TrailingCommaInLiteral:
   Enabled: false
 WordArray:
   Enabled: false
@@ -30,5 +30,5 @@ ClassAndModuleChildren:
   Enabled: false
 AbcSize:
   Enabled: false
-SingleSpaceBeforeFirstArg:
+SpaceBeforeFirstArg:
   Enabled: false

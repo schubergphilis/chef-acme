@@ -25,14 +25,10 @@ rescue LoadError => e
 end
 
 def acme_client
-  Chef::Application.fatal!('Acme requires that a contact is specified') if node['letsencrypt']['contact'].size == 0
+  Chef::Application.fatal!('Acme requires that a contact is specified') if node['letsencrypt']['contact'].empty?
   return @client if @client
 
-  if node['letsencrypt']['private_key'].nil?
-    private_key = OpenSSL::PKey::RSA.new(2048)
-  else
-    private_key = OpenSSL::PKey::RSA.new(node['letsencrypt']['private_key'])
-  end
+  private_key = OpenSSL::PKey::RSA.new(node['letsencrypt']['private_key'].nil? ? 2048 : node['letsencrypt']['private_key'])
 
   @client = Acme::Client.new(private_key: private_key, endpoint: node['letsencrypt']['endpoint'])
 
@@ -94,9 +90,7 @@ end
 
 def self_signed_cert(cn, key)
   cert = OpenSSL::X509::Certificate.new
-  cert.subject = cert.issuer = OpenSSL::X509::Name.new([
-    ['CN', cn, OpenSSL::ASN1::UTF8STRING]
-  ])
+  cert.subject = cert.issuer = OpenSSL::X509::Name.new([['CN', cn, OpenSSL::ASN1::UTF8STRING]])
   cert.not_before = Time.now
   cert.not_after = Time.now + 60 * 60 * 24 * node['letsencrypt']['renew']
   cert.public_key = key.public_key
