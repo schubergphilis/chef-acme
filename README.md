@@ -77,6 +77,9 @@ Example
 -------
 To generate a certificate for an apache2 website you can use code like this:
 
+    # Include the recipe to install the gems
+    include_recipe 'letsencrypt'
+
     # Set up contact information. Note the mailto: notation
     node.set['letsencrypt']['contact'] = [ 'mailto:me@example.com' ] 
     # Real certificates please...

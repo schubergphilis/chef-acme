@@ -24,4 +24,5 @@ default['letsencrypt']['renew']       = 30
 default['letsencrypt']['source_ips']  = ['66.133.109.36']
 
 default['letsencrypt']['private_key'] = nil
+default['letsencrypt']['gem_deps']    = true
 
