@@ -18,9 +18,23 @@
 # limitations under the License.
 #
 
+chef_gem 'activesupport' do
+  action :install
+  version '4.2.6'
+  compile_time true if respond_to?(:compile_time)
+  only_if { node['letsencrypt']['gem_deps'] }
+end
+
+chef_gem 'json-jwt' do
+  action :install
+  version '1.5.2'
+  compile_time true if respond_to?(:compile_time)
+  only_if { node['letsencrypt']['gem_deps'] }
+end
+
 chef_gem 'acme-client' do
   action :install
-  version '0.2.4'
+  version '0.3.6'
   compile_time true if respond_to?(:compile_time)
 end
 
