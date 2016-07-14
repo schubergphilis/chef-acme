@@ -3,6 +3,10 @@ letsencrypt changelog
 
 This file is used to list changes made in each version of the letsencrypt cookbook.
 
+1.0.2
+-----
+miguelaferreira - Wrap test cookbooks in :integration group
+
 1.0.1
 -----
 thoutenbos - Work around gem dependency problems
