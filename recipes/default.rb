@@ -27,14 +27,14 @@ end
 
 chef_gem 'json-jwt' do
   action :install
-  version '1.5.2'
+  version '1.6.3'
   compile_time true if respond_to?(:compile_time)
   only_if { node['letsencrypt']['gem_deps'] }
 end
 
 chef_gem 'acme-client' do
   action :install
-  version '0.3.6'
+  version '0.3.7'
   compile_time true if respond_to?(:compile_time)
 end
 
