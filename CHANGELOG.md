@@ -3,6 +3,11 @@ letsencrypt changelog
 
 This file is used to list changes made in each version of the letsencrypt cookbook.
 
+1.0.3
+-----
+chr4 - Bump versions of json-jwt and acme-client
+thoutenbos - Upgrade acme-client to drop dependencies
+
 1.0.2
 -----
 miguelaferreira - Wrap test cookbooks in :integration group
