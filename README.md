@@ -133,3 +133,7 @@ Contributing
 License and Authors
 -------------------
 Authors: Thijs Houtenbos <thoutenbos@schubergphilis.com>
+
+Credits
+-------
+Let’s Encrypt is a trademark of the Internet Security Research Group. All rights reserved.
