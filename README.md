@@ -1,19 +1,20 @@
-letsencrypt cookbook
+ACME cookbook
 =============
 
-[![Build Status](https://travis-ci.org/schubergphilis/letsencrypt.svg)](https://travis-ci.org/schubergphilis/letsencrypt)
-[![Cookbook Version](https://img.shields.io/cookbook/v/letsencrypt.svg)](https://supermarket.chef.io/cookbooks/letsencrypt)
+[![Build Status](https://travis-ci.org/schubergphilis/chef-acme.svg)](https://travis-ci.org/schubergphilis/chef-acme)
+[![Cookbook Version](https://img.shields.io/cookbook/v/chef-acme.svg)](https://supermarket.chef.io/cookbooks/chef-acme)
 
 Automatically get/renew free and trusted certificates from Let's Encrypt (letsencrypt.org).
+ACME is the Automated Certificate Management Environment protocol used by Let's Encrypt.
 
 Attributes
 ----------
 ### default
-* `node['letsencrypt']['contact']` - Contact information, default empty. Set to `mailto:your@email.com`.
-* `node['letsencrypt']['endpoint']` - ACME server endpoint, default `https://acme-v01.api.letsencrypt.org`. Set to `https://acme-staging.api.letsencrypt.org` if you want to use the letsencrypt staging environment and corresponding certificates.
-* `node['letsencrypt']['renew']` - Days before the certificate expires at which the certificate will be renewed, default `30`.
-* `node['letsencrypt']['source_ips']` - IP addresses used by letsencrypt to verify the TLS certificates, it will change over time. This attribute is for firewall purposes. Allow these IPs for HTTP (tcp/80).
-* `node['letsencrypt']['private_key']` - Private key content of registered account.
+* `node['acme']['contact']` - Contact information, default empty. Set to `mailto:your@email.com`.
+* `node['acme']['endpoint']` - ACME server endpoint, default `https://acme-v01.api.letsencrypt.org`. Set to `https://acme-staging.api.letsencrypt.org` if you want to use the Let's Encrypt staging environment and corresponding certificates.
+* `node['acme']['renew']` - Days before the certificate expires at which the certificate will be renewed, default `30`.
+* `node['acme']['source_ips']` - IP addresses used by Let's Encrypt to verify the TLS certificates, it will change over time. This attribute is for firewall purposes. Allow these IPs for HTTP (tcp/80).
+* `node['acme']['private_key']` - Private key content of registered account.
 
 Recipes
 -------
@@ -22,10 +23,10 @@ Installs the required acme-client rubygem.
 
 Usage
 -----
-Use the `letsencrypt_certificate` provider to request a certificate. The webserver for the domain for which you are requesting a certificate must be running on the local server. Currently only the http validation method is supported. Provide the path to your `wwwroot` for the specified domain.
+Use the `acme_certificate` provider to request a certificate. The webserver for the domain for which you are requesting a certificate must be running on the local server. Currently only the http validation method is supported. Provide the path to your `wwwroot` for the specified domain.
 
 ```ruby
-letsencrypt_certificate 'test.example.com' do
+acme_certificate 'test.example.com' do
   crt      '/etc/ssl/test.example.com.crt'
   key      '/etc/ssl/test.example.com.key'
   method   'http'
@@ -33,10 +34,10 @@ letsencrypt_certificate 'test.example.com' do
 end
 ```
 
-In case your webserver needs an already existing certificate when installing a new server you will have a bootstrap problem. Webserver cannot start without certificate, but the certificate cannot be requested without the running webserver. To overcome this a self-signed certificate can be generated with the `letsencrypt_selfsigned` provider.
+In case your webserver needs an already existing certificate when installing a new server you will have a bootstrap problem. Webserver cannot start without certificate, but the certificate cannot be requested without the running webserver. To overcome this a self-signed certificate can be generated with the `acme_selfsigned` provider.
 
 ```ruby
-letsencrypt_selfsigned 'test.example.com' do
+acme_selfsigned 'test.example.com' do
   crt     '/etc/ssl/test.example.com.crt'
   key     '/etc/ssl/test.example.com.key'
 end
@@ -78,22 +79,20 @@ Example
 To generate a certificate for an apache2 website you can use code like this:
 
     # Include the recipe to install the gems
-    include_recipe 'letsencrypt'
+    include_recipe 'acme'
 
     # Set up contact information. Note the mailto: notation
-    node.set['letsencrypt']['contact'] = [ 'mailto:me@example.com' ] 
+    node.set['acme']['contact'] = [ 'mailto:me@example.com' ] 
     # Real certificates please...
-    node.set['letsencrypt']['endpoint'] = 'https://acme-v01.api.letsencrypt.org' 
+    node.set['acme']['endpoint'] = 'https://acme-v01.api.letsencrypt.org' 
 
     site="example.com"
     sans=Array[ "www.#{site}" ]
 
     # Set up your server here...
 
-    # Let's letsencrypt
-
     # Generate a self-signed if we don't have a cert to prevent bootstrap problems
-    letsencrypt_selfsigned "#{site}" do
+    acme_selfsigned "#{site}" do
         crt     "/etc/httpd/ssl/#{site}.crt"
         key     "/etc/httpd/ssl/#{site}.key"
         chain    "/etc/httpd/ssl/#{site}.pem"
@@ -106,8 +105,8 @@ To generate a certificate for an apache2 website you can use code like this:
         end
     end
 
-    # Get and auto-renew the certificate from letsencrypt
-    letsencrypt_certificate "#{site}" do
+    # Get and auto-renew the certificate from Let's Encrypt
+    acme_certificate "#{site}" do
         crt      "/etc/httpd/ssl/#{site}.crt"
         key      "/etc/httpd/ssl/#{site}.key"
         chain    "/etc/httpd/ssl/#{site}.pem"

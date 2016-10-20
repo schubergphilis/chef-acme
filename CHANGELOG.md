@@ -1,29 +1,34 @@
-letsencrypt changelog
+ACME Cookbook Changelog
 ==============
 
-This file is used to list changes made in each version of the letsencrypt cookbook.
+This file is used to list changes made in each version of the acme cookbook.
+
+2.0.0
+-----
+- thoutenbos - Rename from `letsencrypt` to `acme` to comply with the ISRG trademark policy
+- arr-dev - Add ChefSpec matchers
 
 1.0.3
 -----
-chr4 - Bump versions of json-jwt and acme-client
-thoutenbos - Upgrade acme-client to drop dependencies
+- chr4 - Bump versions of json-jwt and acme-client
+- thoutenbos - Upgrade acme-client to drop dependencies
 
 1.0.2
 -----
-miguelaferreira - Wrap test cookbooks in :integration group
+- miguelaferreira - Wrap test cookbooks in :integration group
 
 1.0.1
 -----
-thoutenbos - Work around gem dependency problems
-thoutenbos - Rubocop fixes
-thoutenbos - Improve the example
+- thoutenbos - Work around gem dependency problems
+- thoutenbos - Rubocop fixes
+- thoutenbos - Improve the example
 
 1.0.0
 -----
-seccubus - Make production the default end-point
-seccubus - Add apache2 example
-thoutenbos - Fix for chef-client v11 compatibility
-thoutenbos - Fix integration tests
+- seccubus - Make production the default end-point
+- seccubus - Add apache2 example
+- thoutenbos - Fix for chef-client v11 compatibility
+- thoutenbos - Fix integration tests
 
 0.1.7
 -----

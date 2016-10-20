@@ -1,9 +1,9 @@
 #
 # Author:: Thijs Houtenbos <thoutenbos@schubergphilis.com>
-# Cookbook:: letsencrypt
+# Cookbook:: acme
 # Attribute:: default
 #
-# Copyright 2015 Schuberg Philis
+# Copyright 2015-2016 Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@
 # limitations under the License.
 #
 
-default['letsencrypt']['contact']     = []
-default['letsencrypt']['endpoint']    = 'https://acme-v01.api.letsencrypt.org'
-default['letsencrypt']['renew']       = 30
-default['letsencrypt']['source_ips']  = ['66.133.109.36']
+default['acme']['contact']     = []
+default['acme']['endpoint']    = 'https://acme-v01.api.letsencrypt.org'
+default['acme']['renew']       = 30
+default['acme']['source_ips']  = ['66.133.109.36']
 
-default['letsencrypt']['private_key'] = nil
-default['letsencrypt']['gem_deps']    = true
+default['acme']['private_key'] = nil
+default['acme']['gem_deps']    = true
 

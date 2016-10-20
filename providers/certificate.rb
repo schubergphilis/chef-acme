@@ -1,9 +1,9 @@
 #
 # Author:: Thijs Houtenbos <thoutenbos@schubergphilis.com>
-# Cookbook:: letsencrypt
+# Cookbook:: acme
 # Provider:: certificate
 #
-# Copyright 2015 Schuberg Philis
+# Copyright 2015-2016 Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ action :create do
 
   mycert   = nil
   mykey    = OpenSSL::PKey::RSA.new ::File.read new_resource.key
-  renew_at = ::Time.now + 60 * 60 * 24 * node['letsencrypt']['renew']
+  renew_at = ::Time.now + 60 * 60 * 24 * node['acme']['renew']
 
   if !new_resource.crt.nil? && ::File.exist?(new_resource.crt)
     mycert   = ::OpenSSL::X509::Certificate.new ::File.read new_resource.crt

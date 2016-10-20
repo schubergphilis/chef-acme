@@ -1,8 +1,8 @@
 #
 # Author:: Thijs Houtenbos <thoutenbos@schubergphilis.com>
-# Cookbook:: letsencrypt
+# Cookbook:: acme
 #
-# Copyright 2015 Schuberg Philis
+# Copyright 2015-2016 Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ suites:
   attributes:
     boulder:
       revision: 2d33a9900cafe82993744fe73bd341fe47df2171
-    letsencrypt:
+    acme:
       endpoint: http://127.0.0.1:4000
       contact:
       - mailto:admin@example.com

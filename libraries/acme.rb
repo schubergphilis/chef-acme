@@ -1,9 +1,9 @@
 #
 # Author:: Thijs Houtenbos <thoutenbos@schubergphilis.com>
-# Cookbook:: letsencrypt
+# Cookbook:: acme
 # Library:: acme
 #
-# Copyright 2015 Schuberg Philis
+# Copyright 2015-2016 Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,17 +25,17 @@ rescue LoadError => e
 end
 
 def acme_client
-  Chef::Application.fatal!('Acme requires that a contact is specified') if node['letsencrypt']['contact'].empty?
+  Chef::Application.fatal!('Acme requires that a contact is specified') if node['acme']['contact'].empty?
   return @client if @client
 
-  private_key = OpenSSL::PKey::RSA.new(node['letsencrypt']['private_key'].nil? ? 2048 : node['letsencrypt']['private_key'])
+  private_key = OpenSSL::PKey::RSA.new(node['acme']['private_key'].nil? ? 2048 : node['acme']['private_key'])
 
-  @client = Acme::Client.new(private_key: private_key, endpoint: node['letsencrypt']['endpoint'])
+  @client = Acme::Client.new(private_key: private_key, endpoint: node['acme']['endpoint'])
 
-  if node['letsencrypt']['private_key'].nil?
-    registration = acme_client.register(contact: node['letsencrypt']['contact'])
+  if node['acme']['private_key'].nil?
+    registration = acme_client.register(contact: node['acme']['contact'])
     registration.agree_terms
-    node.set['letsencrypt']['private_key'] = private_key.to_pem
+    node.set['acme']['private_key'] = private_key.to_pem
   end
 
   @client
@@ -92,7 +92,7 @@ def self_signed_cert(cn, key)
   cert = OpenSSL::X509::Certificate.new
   cert.subject = cert.issuer = OpenSSL::X509::Name.new([['CN', cn, OpenSSL::ASN1::UTF8STRING]])
   cert.not_before = Time.now
-  cert.not_after = Time.now + 60 * 60 * 24 * node['letsencrypt']['renew']
+  cert.not_after = Time.now + 60 * 60 * 24 * node['acme']['renew']
   cert.public_key = key.public_key
   cert.serial = 0x0
   cert.version = 2

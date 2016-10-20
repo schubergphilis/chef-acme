@@ -3,7 +3,7 @@
 # Cookbook:: acme_client
 # Recipe:: default
 #
-# Copyright 2015 Schuberg Philis
+# Copyright 2015-2016 Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@
 # limitations under the License.
 #
 
-include_recipe 'letsencrypt'
+include_recipe 'acme'
 
 # Generate selfsigned certificate so nginx can start
-letsencrypt_selfsigned 'test.example.com' do
+acme_selfsigned 'test.example.com' do
   crt     '/etc/ssl/test.example.com.crt'
   key     '/etc/ssl/test.example.com.key'
 end
@@ -29,7 +29,7 @@ end
 include_recipe 'acme_client::nginx'
 
 # Request the real certificate
-letsencrypt_certificate 'test.example.com' do
+acme_certificate 'test.example.com' do
   alt_names ['web.example.com', 'mail.example.com']
   fullchain '/etc/ssl/test.example.com.crt'
   chain     '/etc/ssl/test.example.com-chain.crt'
@@ -39,7 +39,7 @@ letsencrypt_certificate 'test.example.com' do
   notifies  :reload, 'service[nginx]'
 end
 
-letsencrypt_certificate 'new.example.com' do
+acme_certificate 'new.example.com' do
   crt       '/etc/ssl/new.example.com.crt'
   key       '/etc/ssl/new.example.com.key'
   method    'http'
