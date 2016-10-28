@@ -78,43 +78,45 @@ Example
 -------
 To generate a certificate for an apache2 website you can use code like this:
 
-    # Include the recipe to install the gems
-    include_recipe 'acme'
+```ruby
+# Include the recipe to install the gems
+include_recipe 'acme'
 
-    # Set up contact information. Note the mailto: notation
-    node.set['acme']['contact'] = [ 'mailto:me@example.com' ] 
-    # Real certificates please...
-    node.set['acme']['endpoint'] = 'https://acme-v01.api.letsencrypt.org' 
+# Set up contact information. Note the mailto: notation
+node.set['acme']['contact'] = ['mailto:me@example.com'] 
+# Real certificates please...
+node.set['acme']['endpoint'] = 'https://acme-v01.api.letsencrypt.org' 
 
-    site="example.com"
-    sans=Array[ "www.#{site}" ]
+site = "example.com"
+sans = ["www.#{site}"]
 
-    # Set up your server here...
+# Set up your server here...
 
-    # Generate a self-signed if we don't have a cert to prevent bootstrap problems
-    acme_selfsigned "#{site}" do
-        crt     "/etc/httpd/ssl/#{site}.crt"
-        key     "/etc/httpd/ssl/#{site}.key"
-        chain    "/etc/httpd/ssl/#{site}.pem"
-        owner   "apache"
-        group   "apache"
-        notifies :restart, "service[apache2]", :immediate
-        not_if do
-            # Only generate a self-signed cert if needed
-            ::File.exists?("/etc/httpd/ssl/#{site}.crt")
-        end
-    end
+# Generate a self-signed if we don't have a cert to prevent bootstrap problems
+acme_selfsigned "#{site}" do
+  crt     "/etc/httpd/ssl/#{site}.crt"
+  key     "/etc/httpd/ssl/#{site}.key"
+  chain    "/etc/httpd/ssl/#{site}.pem"
+  owner   "apache"
+  group   "apache"
+  notifies :restart, "service[apache2]", :immediate
+  not_if do
+    # Only generate a self-signed cert if needed
+    ::File.exists?("/etc/httpd/ssl/#{site}.crt")
+  end
+end
 
-    # Get and auto-renew the certificate from Let's Encrypt
-    acme_certificate "#{site}" do
-        crt      "/etc/httpd/ssl/#{site}.crt"
-        key      "/etc/httpd/ssl/#{site}.key"
-        chain    "/etc/httpd/ssl/#{site}.pem"
-        method   "http"
-        wwwroot  "/var/www/#{site}/htdocs/"
-        notifies :restart, "service[apache2]"
-        alt_names sans
-    end
+# Get and auto-renew the certificate from Let's Encrypt
+acme_certificate "#{site}" do
+  crt      "/etc/httpd/ssl/#{site}.crt"
+  key      "/etc/httpd/ssl/#{site}.key"
+  chain    "/etc/httpd/ssl/#{site}.pem"
+  method   "http"
+  wwwroot  "/var/www/#{site}/htdocs/"
+  notifies :restart, "service[apache2]"
+  alt_names sans
+end
+```
 
 Testing
 -------
