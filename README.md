@@ -100,10 +100,6 @@ acme_selfsigned "#{site}" do
   owner   "apache"
   group   "apache"
   notifies :restart, "service[apache2]", :immediate
-  not_if do
-    # Only generate a self-signed cert if needed
-    ::File.exists?("/etc/httpd/ssl/#{site}.crt")
-  end
 end
 
 # Get and auto-renew the certificate from Let's Encrypt
