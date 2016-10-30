@@ -2,7 +2,7 @@ ACME cookbook
 =============
 
 [![Build Status](https://travis-ci.org/schubergphilis/chef-acme.svg)](https://travis-ci.org/schubergphilis/chef-acme)
-[![Cookbook Version](https://img.shields.io/cookbook/v/chef-acme.svg)](https://supermarket.chef.io/cookbooks/chef-acme)
+[![Cookbook Version](https://img.shields.io/cookbook/v/acme.svg)](https://supermarket.chef.io/cookbooks/acme)
 
 Automatically get/renew free and trusted certificates from Let's Encrypt (letsencrypt.org).
 ACME is the Automated Certificate Management Environment protocol used by Let's Encrypt.
@@ -90,8 +90,6 @@ node.set['acme']['endpoint'] = 'https://acme-v01.api.letsencrypt.org'
 site = "example.com"
 sans = ["www.#{site}"]
 
-# Set up your server here...
-
 # Generate a self-signed if we don't have a cert to prevent bootstrap problems
 acme_selfsigned "#{site}" do
   crt     "/etc/httpd/ssl/#{site}.crt"
@@ -101,6 +99,8 @@ acme_selfsigned "#{site}" do
   group   "apache"
   notifies :restart, "service[apache2]", :immediate
 end
+
+# Set up your webserver here...
 
 # Get and auto-renew the certificate from Let's Encrypt
 acme_certificate "#{site}" do
