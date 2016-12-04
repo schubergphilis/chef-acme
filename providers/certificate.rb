@@ -51,7 +51,7 @@ action :create do
 
   if mycert.nil? || mycert.not_after <= renew_at
     all_validations = [new_resource.cn, new_resource.alt_names].flatten.compact.map do |domain|
-      authz = acme_authz domain
+      authz = acme_authz_for domain
 
       case authz.status
       when 'valid'

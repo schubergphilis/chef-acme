@@ -1,9 +1,8 @@
 #
 # Author:: Thijs Houtenbos <thoutenbos@schubergphilis.com>
-# Cookbook:: acme_server
-# Recipe:: default
+# Cookbook:: acme
 #
-# Copyright 2015-2017 Schuberg Philis
+# Copyright 2015-2016 Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,18 +17,6 @@
 # limitations under the License.
 #
 
-file 'hosts' do
-  path '/etc/hosts'
-  atomic_update false
-  content "127.0.0.1\tlocalhost boulder boulder-rabbitmq boulder-mysql test.example.com new.example.com web.example.com mail.example.com"
-end
+source 'https://rubygems.org'
 
-chef_gem 'chef-rewind'
-require 'chef/rewind'
-
-include_recipe 'letsencrypt-boulder-server'
-
-# awaiting https://github.com/customink-webops/hostsfile/pull/78
-rewind hostsfile_entry: '127.0.0.1' do
-  action :nothing
-end
+gem 'serverspec'
