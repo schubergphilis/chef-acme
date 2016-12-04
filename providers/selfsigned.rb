@@ -43,7 +43,7 @@ action :create do
   return if new_resource.chain.nil?
 
   file "#{new_resource.cn} SSL selfsigned chain" do
-    path    new_resource.chain
+    path    new_resource.chain unless new_resource.chain.nil?
     owner   new_resource.owner
     group   new_resource.group
     mode    00644

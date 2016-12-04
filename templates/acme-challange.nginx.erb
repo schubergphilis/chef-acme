@@ -1,0 +1,8 @@
+server {
+    listen              443 ssl;
+    server_name         <%= @host %>;
+    ssl_certificate     <%= @cert %>;
+    ssl_certificate_key <%= @key %>;
+
+    return 202;
+}

@@ -1,9 +1,8 @@
 #
 # Author:: Thijs Houtenbos <thoutenbos@schubergphilis.com>
-# Cookbook:: acme_client
-# Recipe:: nginx
+# Cookbook:: acme
 #
-# Copyright 2015-2017 Schuberg Philis
+# Copyright 2015-2016 Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,22 +17,6 @@
 # limitations under the License.
 #
 
-# Install a webserver
-include_recipe 'chef_nginx'
+source 'https://rubygems.org'
 
-nginx_site 'test' do
-  template 'nginx-test.conf'
-
-  notifies :reload, "service[nginx]", :immediately
-end
-
-directory node['nginx']['default_root'] do
-  owner 'root'
-  group 'root'
-  recursive true
-end
-
-cookbook_file "#{node['nginx']['default_root']}/index.html" do
-  source 'index.html'
-end
-
+gem 'serverspec'

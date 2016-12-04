@@ -35,26 +35,25 @@ def acme_client
   if node['acme']['private_key'].nil?
     registration = acme_client.register(contact: node['acme']['contact'])
     registration.agree_terms
-    node.set['acme']['private_key'] = private_key.to_pem
+    node.normal['acme']['private_key'] = private_key.to_pem
   end
 
   @client
 end
 
-def acme_authz(domain)
+def acme_authz_for(domain)
   acme_client.authorize(domain: domain)
 end
 
 def acme_validate(authz)
   authz.request_verification
 
-  sleep 10
-  times = 0
+  times = 60
 
-  while times <= 6
+  while times > 0
     break unless authz.verify_status == 'pending'
-    times += 1
-    sleep 10
+    times -= 1
+    sleep 1
   end
 
   authz
@@ -66,13 +65,12 @@ def acme_validate_immediately(authz, method, tokenroot, auth_file)
   validate = authz.send(method.to_sym)
   validate.request_verification
 
-  sleep 10
-  times = 0
+  times = 60
 
-  while times <= 6
+  while times > 0
     break unless validate.verify_status == 'pending'
-    times += 1
-    sleep 10
+    times -= 1
+    sleep 1
   end
 
   validate
