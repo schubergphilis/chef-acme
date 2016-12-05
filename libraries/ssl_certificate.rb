@@ -94,6 +94,7 @@ class Chef
               case authz.status
               when 'valid'
                 ::Chef::Log.info("Authz #{domain} valid")
+                [domain, 'valid']
 
               when 'pending'
                 ::Chef::Log.info("Authz #{domain} pending")
