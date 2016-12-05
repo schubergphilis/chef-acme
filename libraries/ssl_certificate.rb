@@ -49,7 +49,7 @@ class Chef
 
         if !!alt_extension
           data = OpenSSL::ASN1.decode(alt_extension).value[1].value
-          current_alt_names = OpenSSL::ASN1.decode(alt_extension).map { |x| x.value }
+          current_alt_names = OpenSSL::ASN1.decode(data).map { |x| x.value }
         end
 
         current_alt_names.sort == (new_resource.alt_names | [new_resource.cn]).sort
