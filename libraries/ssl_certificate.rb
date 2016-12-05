@@ -88,7 +88,7 @@ class Chef
           ::Chef::Log.warn("WARN Renewing ACME certificate for #{@new_resource.cn}: renewal = #{check_renewal}, cn = #{check_cn}, alt_name = #{check_alt_names}, pkey = #{check_pkey}")
 
           converge_by("Renew ACME certifiacte") do
-            validations = [new_resource.cn, new_resource.alt_names].flatten.compact.map do |domain|
+            validations = [new_resource.cn, new_resource.alt_names].flatten.compact.uniq.map do |domain|
               authz = acme_authz_for(domain)
 
               case authz.status
