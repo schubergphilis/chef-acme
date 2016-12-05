@@ -52,7 +52,10 @@ class Chef
           current_alt_names = OpenSSL::ASN1.decode(data).map { |x| x.value }
         end
 
-        current_alt_names.sort == (new_resource.alt_names | [new_resource.cn]).sort
+        #We ignore if the cn is among the subjectAltNames in one or the other certificate.
+        current_cn = @current_cert.subject.to_a.map { |x| x[1] if x[0] == 'CN' }
+
+        (current_alt_names | [current_cn]).flatten.compact.sort.uniq == (new_resource.alt_names | [new_resource.cn]).flatten.compact.sort.uniq
       end
 
       def check_cn
