@@ -128,7 +128,7 @@ class Chef
               end
             end
 
-            failed_validations = validations.select { |v| v[1] != 'valid' }
+            failed_validations = validations.reject { |v| v[1] == 'valid' }
             fail "Validation failed for some domains: #{failed_validations}" unless failed_validations.empty?
 
             begin
