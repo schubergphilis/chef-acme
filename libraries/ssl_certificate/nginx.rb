@@ -8,7 +8,11 @@ class Chef
         def initialize(*args)
           super(*args)
 
-          Chef::Log.warn("This provider has not been tested with nginx < 1.10") unless Chef::VersionConstraint.new(">= 1.10").include?(node.automatic_attrs[:nginx][:version])
+          if node.automatic_attrs[:nginx][:version].is_a?(String)
+            unless Chef::VersionConstraint.new(">= 1.10").include?(node.automatic_attrs[:nginx][:version])
+              Chef::Log.warn("This provider has not been tested with nginx < 1.10")
+            end
+          end
         end
 
         attr_reader :nginx
