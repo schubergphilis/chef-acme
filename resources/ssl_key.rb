@@ -8,5 +8,5 @@ property :type,					Symbol,  :equal_to => [:rsa, :dsa], :default => :rsa
 
 def load
   klass = OpenSSL::PKey.const_get(type.upcase)
-  klass.new(::File.read(path))
+  klass.new(::File.read(path)) if ::File.exist?(path)
 end
