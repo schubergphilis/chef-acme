@@ -35,26 +35,25 @@ def acme_client
   if node['acme']['private_key'].nil?
     registration = acme_client.register(contact: node['acme']['contact'])
     registration.agree_terms
-    node.set['acme']['private_key'] = private_key.to_pem
+    node.normal['acme']['private_key'] = private_key.to_pem
   end
 
   @client
 end
 
-def acme_authz(domain)
+def acme_authz_for(domain)
   acme_client.authorize(domain: domain)
 end
 
 def acme_validate(authz)
   authz.request_verification
 
-  sleep 10
-  times = 0
+  times = 60
 
-  while times <= 6
+  while times > 0
     break unless authz.verify_status == 'pending'
-    times += 1
-    sleep 10
+    times -= 1
+    sleep 1
   end
 
   authz
@@ -66,13 +65,12 @@ def acme_validate_immediately(authz, method, tokenroot, auth_file)
   validate = authz.send(method.to_sym)
   validate.request_verification
 
-  sleep 10
-  times = 0
+  times = 60
 
-  while times <= 6
+  while times > 0
     break unless validate.verify_status == 'pending'
-    times += 1
-    sleep 10
+    times -= 1
+    sleep 1
   end
 
   validate
@@ -88,7 +86,7 @@ def acme_cert(cn, key, alt_names = [])
   acme_client.new_certificate(csr)
 end
 
-def self_signed_cert(cn, key)
+def self_signed_cert(cn, alts, key)
   cert = OpenSSL::X509::Certificate.new
   cert.subject = cert.issuer = OpenSSL::X509::Name.new([['CN', cn, OpenSSL::ASN1::UTF8STRING]])
   cert.not_before = Time.now
@@ -100,10 +98,12 @@ def self_signed_cert(cn, key)
   ef = OpenSSL::X509::ExtensionFactory.new
   ef.subject_certificate = cert
   ef.issuer_certificate = cert
-  cert.extensions = [
-    ef.create_extension('basicConstraints', 'CA:FALSE', true),
-    ef.create_extension('subjectKeyIdentifier', 'hash'),
-  ]
+
+  cert.extensions = []
+
+  cert.extensions += [ef.create_extension('basicConstraints', 'CA:FALSE', true)]
+  cert.extensions += [ef.create_extension('subjectKeyIdentifier', 'hash')]
+  cert.extensions += [ef.create_extension('subjectAltName', alts.map { |d| "DNS:#{d}"}.join(','))] if alts.length > 0
 
   cert.sign key, OpenSSL::Digest::SHA256.new
 end

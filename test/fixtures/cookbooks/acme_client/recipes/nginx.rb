@@ -21,8 +21,10 @@
 # Install a webserver
 include_recipe 'chef_nginx'
 
-cookbook_file "#{node['nginx']['dir']}/sites-available/test" do
-  source 'nginx-test.conf'
+nginx_site 'test' do
+  template 'nginx-test.conf'
+
+  notifies :reload, "service[nginx]", :immediately
 end
 
 directory node['nginx']['default_root'] do
@@ -35,6 +37,3 @@ cookbook_file "#{node['nginx']['default_root']}/index.html" do
   source 'index.html'
 end
 
-nginx_site 'test' do
-  timing :immediately
-end
