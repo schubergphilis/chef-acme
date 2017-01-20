@@ -20,8 +20,9 @@
 source 'https://rubygems.org'
 
 group :test do
-  gem 'rake'
+  gem 'rake', '~> 11.3'
   gem 'berkshelf', '~> 4.0'
+  gem 'nio4r', '~> 1.2'
   gem 'solve', '= 2.0.2' # Bug: https://github.com/berkshelf/solve/issues/57
 end
 

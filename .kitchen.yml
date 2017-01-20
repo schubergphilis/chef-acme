@@ -26,7 +26,7 @@ driver:
 platforms:
 - name: centos-7
   driver:
-    box: opscode-centos-7.1 # virtualbox
+    box: centos/7 # virtualbox
     image: centos-7-0-x64   # digitalocean
 - name: ubuntu-14.04
   run_list:

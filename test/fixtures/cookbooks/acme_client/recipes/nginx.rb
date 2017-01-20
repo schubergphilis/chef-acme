@@ -19,7 +19,7 @@
 #
 
 # Install a webserver
-include_recipe 'nginx'
+include_recipe 'chef_nginx'
 
 cookbook_file "#{node['nginx']['dir']}/sites-available/test" do
   source 'nginx-test.conf'
