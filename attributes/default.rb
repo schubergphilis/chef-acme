@@ -26,3 +26,5 @@ default['acme']['source_ips']  = ['66.133.109.36']
 default['acme']['private_key'] = nil
 default['acme']['gem_deps']    = true
 
+default['acme']['key_size']    = 2048
+
