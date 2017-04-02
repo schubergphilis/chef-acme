@@ -45,3 +45,11 @@ acme_certificate 'new.example.com' do
   method    'http'
   wwwroot   node['nginx']['default_root']
 end
+
+acme_certificate '4096.example.com' do
+  crt       '/etc/ssl/4096.example.com.crt'
+  key       '/etc/ssl/4096.example.com.key'
+  method    'http'
+  key_size  4096
+  wwwroot   node['nginx']['default_root']
+end

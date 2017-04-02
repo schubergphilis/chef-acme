@@ -15,6 +15,7 @@ Attributes
 * `node['acme']['renew']` - Days before the certificate expires at which the certificate will be renewed, default `30`.
 * `node['acme']['source_ips']` - IP addresses used by Let's Encrypt to verify the TLS certificates, it will change over time. This attribute is for firewall purposes. Allow these IPs for HTTP (tcp/80).
 * `node['acme']['private_key']` - Private key content of registered account.
+* `node['acme']['key_size']` - Default private key size used when resource property is not. Must be one out of: 2048, 3072, 4096. Defaults to 2048.
 
 Recipes
 -------
@@ -54,6 +55,7 @@ Providers
 | `alt_names`      | array   | []       | The common name for the certificate                    |
 | `crt`            | string  | nil      | File path to place the certificate                     |
 | `key`            | string  | nil      | File path to place the private key                     |
+| `key_size`       | integer | 2048     | Private key size. Must be one out of: 2048, 3072, 4096 |
 | `chain`          | string  | nil      | File path to place the certificate chain               |
 | `fullchain`      | string  | nil      | File path to place the certificate including the chain |
 | `owner`          | string  | root     | Owner of the created files                             |
@@ -70,6 +72,7 @@ Providers
 | `cn`             | string  | _name_   | The common name for the certificate                    |
 | `crt`            | string  | nil      | File path to place the certificate                     |
 | `key`            | string  | nil      | File path to place the private key                     |
+| `key_size`       | integer | 2048     | Private key size. Must be one out of: 2048, 3072, 4096 |
 | `chain`          | string  | nil      | File path to place the certificate chain               |
 | `owner`          | string  | root     | Owner of the created files                             |
 | `group`          | string  | root     | Group of the created files                             |
@@ -83,9 +86,9 @@ To generate a certificate for an apache2 website you can use code like this:
 include_recipe 'acme'
 
 # Set up contact information. Note the mailto: notation
-node.set['acme']['contact'] = ['mailto:me@example.com'] 
+node.set['acme']['contact'] = ['mailto:me@example.com']
 # Real certificates please...
-node.set['acme']['endpoint'] = 'https://acme-v01.api.letsencrypt.org' 
+node.set['acme']['endpoint'] = 'https://acme-v01.api.letsencrypt.org'
 
 site = "example.com"
 sans = ["www.#{site}"]
