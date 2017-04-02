@@ -25,12 +25,9 @@ file 'hosts' do
   only_if { platform? 'centos' }
 end
 
-chef_gem 'chef-rewind'
-require 'chef/rewind'
-
 include_recipe 'letsencrypt-boulder-server'
 
 # awaiting https://github.com/customink-webops/hostsfile/pull/78
-rewind hostsfile_entry: '127.0.0.1' do
+edit_resource(:hostsfile_entry, '127.0.0.1') do
   action :nothing
 end
