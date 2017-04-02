@@ -24,30 +24,35 @@ driver:
     memory: 1024
 
 platforms:
-- name: centos-7
-  driver:
-    box: centos/7 # virtualbox
-    image: centos-7-0-x64   # digitalocean
-- name: ubuntu-14.04
-  run_list:
-    - recipe[apt]
-  driver:
-    box: bento/ubuntu-14.04
-    image: ubuntu-14-04-x64
-
+  - name: centos-7
+    driver:
+      box: bento/centos-7.3 # virtualbox, vmware, parallels
+      image: centos-7-0-x64 # digitalocean
+  - name: ubuntu-14.04
+    run_list:
+      - recipe[apt]
+    driver:
+      box: bento/ubuntu-14.04
+      image: ubuntu-14-04-x64
+  - name: ubuntu-16.04
+    run_list:
+      - recipe[apt]
+    driver:
+      box: bento/ubuntu-16.04
+      image: ubuntu-16-04-x64
 
 provisioner:
   name: chef_zero
 
 suites:
-- name: default
-  run_list:
-  - recipe[acme_server]
-  - recipe[acme_client]
-  attributes:
-    boulder:
-      revision: 2d33a9900cafe82993744fe73bd341fe47df2171
-    acme:
-      endpoint: http://127.0.0.1:4000
-      contact:
-      - mailto:admin@example.com
+  - name: default
+    run_list:
+    - recipe[acme_server]
+    - recipe[acme_client]
+    attributes:
+      boulder:
+        revision: 2d33a9900cafe82993744fe73bd341fe47df2171
+      acme:
+        endpoint: http://127.0.0.1:4000
+        contact:
+        - mailto:admin@example.com
