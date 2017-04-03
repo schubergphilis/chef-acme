@@ -70,3 +70,13 @@ describe x509_private_key('/etc/ssl/new.example.com.key') do
   it { should_not be_encrypted }
   it { should have_matching_certificate('/etc/ssl/new.example.com.crt') }
 end
+
+describe x509_certificate('/etc/ssl/4096.example.com.crt') do
+  it { should be_certificate }
+  it { should have_purpose 'SSL server' }
+  it { should_not have_purpose 'SSL server CA' }
+  its(:keylength) { should be 4096 }
+  its(:validity_in_days) { should be > 30 }
+  its(:subject) { should match '/CN=4096.example.com/' }
+  its(:issuer) { should eq '/CN=happy hacker fake CA' }
+end

@@ -26,7 +26,7 @@ action :create do
     owner     new_resource.owner
     group     new_resource.group
     mode      00400
-    content   OpenSSL::PKey::RSA.new(2048).to_pem
+    content   OpenSSL::PKey::RSA.new(new_resource.key_size).to_pem
     sensitive true
     action    :create_if_missing
   end
