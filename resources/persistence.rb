@@ -11,7 +11,7 @@ property :master, [TrueClass, FalseClass], default: false
 
 property :data_bag_name, String, required: true
 property :encrypt, [TrueClass, FalseClass], default: true
-property :secret, String, default: Chef::EncryptedDataBagItem.load_secret(Chef::Config[:encrypted_data_bag_secret])
+property :secret, String
 
 property :owner,     String, default: 'root'
 property :group,     String, default: 'root'
@@ -23,24 +23,26 @@ action :save do
   end
 
   data = {
-    'id'        => cn,
-    'alt_names' => alt_names,
+    'id'         => cn,
+    'alt_names'  => alt_names,
+    'created_by' => node['fqdn'],
+    'created_at' => Time.now
   }
 
+  # 'key', 'cert', 'chain' are also used in the data bag format used by
+  # https://github.com/atomic-penguin/cookbook-certificate/blob/master/providers/manage.rb
   data['key']       = ::File.read(new_resource.key)       if new_resource.key
-  data['crt']       = ::File.read(new_resource.crt)       if new_resource.crt
+  data['cert']      = ::File.read(new_resource.crt)       if new_resource.crt
   data['chain']     = ::File.read(new_resource.chain)     if new_resource.chain
-  data['fullchain'] = ::File.read(new_resource.fullchain) if new_resource.fullchain
 
-  data['created_by'] = node['fqdn']
-  data['created_at'] = Time.now
+  data['fullchain'] = ::File.read(new_resource.fullchain) if new_resource.fullchain
 
   chef_data_bag_item "#{data_bag_name}/#{cn}" do
     raw_data data
-    if new_resource.encrypt && new_resource.secret
+    if new_resource.encrypt && (new_resource.secret || default_data_bag_secret)
       encrypt true
       encryption_version 2
-      secret new_resource.secret
+      secret new_resource.secret || default_data_bag_secret
     end
   end
 end
@@ -89,7 +91,7 @@ action_class do
   end
 
   def item_newer?(item, existing_cert)
-    item_cert   = ::OpenSSL::X509::Certificate.new item['crt'] if item['crt']
+    item_cert   = ::OpenSSL::X509::Certificate.new item['cert'] if item['cert']
     item_cert ||= ::OpenSSL::X509::Certificate.new item['fullchain'] if item['fullchain']
     item_cert.not_before > existing_cert.not_before
   rescue OpenSSL::X509::CertificateError => e
@@ -112,10 +114,10 @@ action_class do
       owner     new_resource.owner
       group     new_resource.group
       mode      00644
-      content   item['crt']
+      content   item['cert']
       action    :create
 
-      only_if { !!item['crt'] }
+      only_if { !!item['cert'] }
     end
 
     file "acme_store: #{new_resource.cn} SSL fullchain" do
@@ -139,5 +141,11 @@ action_class do
 
       only_if { !!item['chain'] }
     end
+  end
+
+  def default_data_bag_secret
+    Chef::EncryptedDataBagItem.load_secret(Chef::Config[:encrypted_data_bag_secret])
+  rescue => e
+    Chef::Log.error "property 'secret' is not provided and the default encrypted_data_bag_secret file does not exist: #{e}"
   end
 end
