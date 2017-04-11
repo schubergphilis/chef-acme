@@ -6,4 +6,5 @@ description      'Installs/Configures the Boulder Acme server'
 long_description 'Installs/Configures the Boulder Acme server'
 version          '0.1.0'
 
+depends          'rabbitmq', '= 4.10.0'
 depends          'letsencrypt-boulder-server'
