@@ -19,6 +19,9 @@
 #
 
 if defined?(ChefSpec)
+  ChefSpec.define_matcher(:acme_certificate)
+  ChefSpec.define_matcher(:acme_selfsigned)
+
   def create_acme_selfsigned(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:acme_selfsigned, :create, resource_name)
   end
