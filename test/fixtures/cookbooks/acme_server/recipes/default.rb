@@ -28,6 +28,7 @@ end
 include_recipe 'letsencrypt-boulder-server'
 
 # awaiting https://github.com/customink-webops/hostsfile/pull/78
+# edit_resource is a chef 12.10/compat_resource feature
 edit_resource(:hostsfile_entry, '127.0.0.1') do
   action :nothing
 end
