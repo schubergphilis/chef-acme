@@ -41,6 +41,7 @@ end
 
 acme_certificate 'new.example.com' do
   crt       '/etc/ssl/new.example.com.crt'
+  chain     '/etc/ssl/new.example.com-chain.crt'
   key       '/etc/ssl/new.example.com.key'
   method    'http'
   wwwroot   node['nginx']['default_root']
