@@ -17,16 +17,25 @@
 # limitations under the License.
 #
 
-rvm:
-- 2.2
-
 sudo: required
 services: docker
+addons:
+  apt:
+    sources:
+      - chef-stable-precise
+    packages:
+      - chefdk
 
-before_install: curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chefdk -v 0.8.0
-install: chef exec bundle install --jobs=3 --retry=3 --without='doc integration_vagrant integration_cloud guard'
+cache:
+  apt: true
 
-# https://github.com/zuazo/kitchen-in-travis-native/issues/1#issuecomment-142455888
-before_script: sudo iptables -L DOCKER || sudo iptables -N DOCKER
+before_install:
+  - eval "$(/opt/chefdk/bin/chef shell-init bash)"
+  - chef --version
+  - docker --version
 
-script: travis_retry chef exec bundle exec rake integration[default-centos-7]
+install:
+  - chef exec bundle install --jobs=3 --retry=3 --without='doc integration_vagrant integration_cloud guard'
+
+script:
+  - travis_retry chef exec bundle exec rake integration[default-centos-7]
