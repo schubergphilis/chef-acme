@@ -55,14 +55,14 @@ action :create do
 
       case authz.status
       when 'valid'
-        case new_resource.method
+        case new_resource.validation_method
         when 'http'
           authz.http01
         else
-          fail "[#{new_resource.cn}] Invalid validation method '#{new_resource.method}'"
+          fail "[#{new_resource.cn}] Invalid validation_method '#{new_resource.validation_method}'"
         end
       when 'pending'
-        case new_resource.method
+        case new_resource.validation_method
         when 'http'
           tokenpath = "#{new_resource.wwwroot}/#{authz.http01.filename}"
 
@@ -88,7 +88,7 @@ action :create do
           validation
 
         else
-          fail "[#{new_resource.cn}] Invalid validation method '#{new_resource.method}'"
+          fail "[#{new_resource.cn}] Invalid validation validation_method '#{new_resource.validation_method}'"
         end
       end
     end

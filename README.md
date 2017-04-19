@@ -28,10 +28,10 @@ Use the `acme_certificate` provider to request a certificate. The webserver for 
 
 ```ruby
 acme_certificate 'test.example.com' do
-  crt      '/etc/ssl/test.example.com.crt'
-  key      '/etc/ssl/test.example.com.key'
-  method   'http'
-  wwwroot  '/var/www'
+  crt               '/etc/ssl/test.example.com.crt'
+  key               '/etc/ssl/test.example.com.key'
+  validation_method 'http'
+  wwwroot           '/var/www'
 end
 ```
 
@@ -49,22 +49,22 @@ A working example can be found in the included `acme_client` test cookbook.
 Providers
 ---------
 ### certificate
-| Property         | Type    | Default  | Description                                            |
-|  ---             |  ---    |  ---     |  ---                                                   |
-| `cn`             | string  | _name_   | The common name for the certificate                    |
-| `alt_names`      | array   | []       | The common name for the certificate                    |
-| `crt`            | string  | nil      | File path to place the certificate                     |
-| `key`            | string  | nil      | File path to place the private key                     |
-| `key_size`       | integer | 2048     | Private key size. Must be one out of: 2048, 3072, 4096 |
-| `chain`          | string  | nil      | File path to place the certificate chain               |
-| `fullchain`      | string  | nil      | File path to place the certificate including the chain |
-| `owner`          | string  | root     | Owner of the created files                             |
-| `group`          | string  | root     | Group of the created files                             |
-| `method`         | string  | http     | Validation method                                      |
-| `wwwroot`        | string  | /var/www | Path to the wwwroot of the domain                      |
-| `ignore_failure` | boolean | false    | Whether to continue chef run if issuance fails         |
-| `retries`        | integer | 0        | Number of times to catch exceptions and retry          |
-| `retry_delay`    | integer | 2        | Number of seconds to wait between retries              |
+| Property            | Type    | Default  | Description                                            |
+|  ---                |  ---    |  ---     |  ---                                                   |
+| `cn`                | string  | _name_   | The common name for the certificate                    |
+| `alt_names`         | array   | []       | The common name for the certificate                    |
+| `crt`               | string  | nil      | File path to place the certificate                     |
+| `key`               | string  | nil      | File path to place the private key                     |
+| `key_size`          | integer | 2048     | Private key size. Must be one out of: 2048, 3072, 4096 |
+| `chain`             | string  | nil      | File path to place the certificate chain               |
+| `fullchain`         | string  | nil      | File path to place the certificate including the chain |
+| `owner`             | string  | root     | Owner of the created files                             |
+| `group`             | string  | root     | Group of the created files                             |
+| `validation_method` | string  | http     | Validation method                                      |
+| `wwwroot`           | string  | /var/www | Path to the wwwroot of the domain                      |
+| `ignore_failure`    | boolean | false    | Whether to continue chef run if issuance fails         |
+| `retries`           | integer | 0        | Number of times to catch exceptions and retry          |
+| `retry_delay`       | integer | 2        | Number of seconds to wait between retries              |
 
 ### selfsigned
 | Property         | Type    | Default  | Description                                            |
@@ -107,11 +107,11 @@ end
 
 # Get and auto-renew the certificate from Let's Encrypt
 acme_certificate "#{site}" do
-  crt      "/etc/httpd/ssl/#{site}.crt"
-  key      "/etc/httpd/ssl/#{site}.key"
-  chain    "/etc/httpd/ssl/#{site}.pem"
-  method   "http"
-  wwwroot  "/var/www/#{site}/htdocs/"
+  crt               "/etc/httpd/ssl/#{site}.crt"
+  key               "/etc/httpd/ssl/#{site}.key"
+  chain             "/etc/httpd/ssl/#{site}.pem"
+  validation_method "http"
+  wwwroot           "/var/www/#{site}/htdocs/"
   notifies :restart, "service[apache2]"
   alt_names sans
 end
