@@ -15,4 +15,4 @@ supports         'fedora'
 supports         'redhat'
 supports         'ubuntu'
 
-depends 'compat_resource'
+depends 'compat_resource', '>= 12.19'

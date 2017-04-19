@@ -8,3 +8,4 @@ version          '0.1.0'
 
 depends          'rabbitmq', '= 4.10.0'
 depends          'letsencrypt-boulder-server'
+depends          'compat_resource', '>= 12.19'
