@@ -24,7 +24,6 @@ driver:
   privileged: true
 
 provisioner:
-  require_chef_omnibus: 12.17.44
 
 platforms:
 - name: centos-7
