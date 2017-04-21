@@ -29,6 +29,7 @@ Use the `acme_certificate` provider to request a certificate. The webserver for 
 ```ruby
 acme_certificate 'test.example.com' do
   crt               '/etc/ssl/test.example.com.crt'
+  chain             '/etc/ssl/test.example.com.pem'
   key               '/etc/ssl/test.example.com.key'
   validation_method 'http'
   wwwroot           '/var/www'
@@ -40,6 +41,7 @@ In case your webserver needs an already existing certificate when installing a n
 ```ruby
 acme_selfsigned 'test.example.com' do
   crt     '/etc/ssl/test.example.com.crt'
+  chain     '/etc/ssl/test.example.com.pem'
   key     '/etc/ssl/test.example.com.key'
 end
 ```
@@ -65,6 +67,8 @@ Providers
 | `ignore_failure`    | boolean | false    | Whether to continue chef run if issuance fails         |
 | `retries`           | integer | 0        | Number of times to catch exceptions and retry          |
 | `retry_delay`       | integer | 2        | Number of seconds to wait between retries              |
+
+By changes in Chef 13, the property in version 2.0.0 `method` in version 3.0.0 is called `validation_method`.
 
 ### selfsigned
 | Property         | Type    | Default  | Description                                            |
