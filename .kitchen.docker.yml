@@ -22,6 +22,8 @@ driver:
   name: docker
   use_sudo: false
   privileged: true
+  volume:
+    - /sys/fs/cgroup
 
 provisioner:
 
@@ -33,6 +35,7 @@ platforms:
     run_command: /usr/lib/systemd/systemd
     provision_command:
       - /bin/yum install -y initscripts net-tools wget
+
 - name: ubuntu-14.04
   driver_config:
     image: ubuntu:14.04
