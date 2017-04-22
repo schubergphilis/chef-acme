@@ -109,14 +109,16 @@ action :create do
               f.mode    00644
             end.run_action :create
 
-            Chef::Resource::File.new("#{new_resource.cn} SSL new chain", run_context).tap do |f|
-              f.path    new_resource.chain
-              f.owner   new_resource.owner
-              f.group   new_resource.group
-              f.content newcert.chain_to_pem
-              f.not_if  { new_resource.chain.nil? }
-              f.mode    00644
-            end.run_action :create
+            if new_resource.chain
+              Chef::Resource::File.new("#{new_resource.cn} SSL new chain", run_context).tap do |f|
+                f.path    new_resource.chain
+                f.owner   new_resource.owner
+                f.group   new_resource.group
+                f.content newcert.chain_to_pem
+                f.not_if  { new_resource.chain.nil? }
+                f.mode    00644
+              end.run_action :create
+            end
           end
         else
           fail "[#{new_resource.cn}] Validation failed, unable to request certificate"
