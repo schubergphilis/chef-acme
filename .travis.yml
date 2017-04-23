@@ -17,25 +17,38 @@
 # limitations under the License.
 #
 
+dist: trusty
 sudo: required
 services: docker
 addons:
   apt:
     sources:
-      - chef-stable-precise
+      - chef-stable-trusty
     packages:
       - chefdk
 
 cache:
   apt: true
 
+env:
+  matrix:
+    - INSTANCE=centos-7
+    - INSTANCE=ubuntu-1604
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: INSTANCE=ubuntu-1604
+
 before_install:
   - eval "$(/opt/chefdk/bin/chef shell-init bash)"
   - chef --version
   - docker --version
 
-install:
-  - chef exec bundle install --jobs=3 --retry=3 --without='doc integration_vagrant integration_cloud guard'
+# We are using ChefDK so no gem install required.
+# https://docs.travis-ci.com/user/customizing-the-build#Skipping-the-Installation-Step
+install: true
 
 script:
-  - travis_retry chef exec bundle exec rake integration[default-centos-7]
+  - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml /opt/chefdk/embedded/bin/kitchen verify ${INSTANCE}
+  # TODO: add rubocop/cookstyle and foocritic checks
