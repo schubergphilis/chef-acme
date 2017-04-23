@@ -36,5 +36,5 @@ cookbook_file "#{node['nginx']['default_root']}/index.html" do
 end
 
 nginx_site 'test' do
-  timing :immediately
+  notifies :reload, 'service[nginx]', :immediately
 end
