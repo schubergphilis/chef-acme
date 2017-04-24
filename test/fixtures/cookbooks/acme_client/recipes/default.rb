@@ -41,6 +41,7 @@ end
 
 acme_certificate 'new.example.com' do
   crt               '/etc/ssl/new.example.com.crt'
+  chain             '/etc/ssl/new.example.com-chain.crt'
   key               '/etc/ssl/new.example.com.key'
   validation_method 'http'
   wwwroot           node['nginx']['default_root']
@@ -48,6 +49,7 @@ end
 
 acme_certificate '4096.example.com' do
   crt               '/etc/ssl/4096.example.com.crt'
+  chain             '/etc/ssl/4096.example.com-chain.crt'
   key               '/etc/ssl/4096.example.com.key'
   validation_method 'http'
   key_size          4096
