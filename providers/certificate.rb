@@ -25,7 +25,7 @@ action :create do
     fail "[#{new_resource.cn}] No valid certificate output specified, only one of the crt/fullchain propery is permitted and required"
   end
   
-  if !new_resource.crt.nil? && new_resource.chain.nil?
+  if new_resource.fullchain.nil? && new_resource.chain.nil?
     fail "[#{new_resource.cn}] No valid chain output specified, a chain is required when outputting a cert"
   end
 
