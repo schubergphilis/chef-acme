@@ -19,38 +19,39 @@
 
 ---
 driver:
-  name: docker
-  use_sudo: false
-  privileged: true
-  volume:
-    - /sys/fs/cgroup
+  name: dokken
+  chef_version: latest
+  privileged: true # because Docker and systemd/Upstart
+  volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup # because of systemd, rabbitmq
+
+transport:
+  name: dokken
 
 provisioner:
+  name: dokken
 
 platforms:
 - name: centos-7
-  driver_config:
+  driver:
     image: centos:7
     platform: rhel
-    run_command: /usr/lib/systemd/systemd
-    provision_command:
-      - /bin/yum install -y initscripts net-tools wget
+    pid_one_command: /usr/lib/systemd/systemd
+    intermediate_instructions:
+      - RUN yum -y install lsof which systemd-sysv initscripts sudo
 
 - name: ubuntu-14.04
-  driver_config:
-    image: ubuntu:14.04
-    disable_upstart: false
-    run_command: /sbin/init
+  driver:
+    image: ubuntu-upstart:14.04
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+      - RUN apt-get install -y sudo curl
 
-suites:
-- name: default
-  run_list:
-  - recipe[acme_server]
-  - recipe[acme_client]
-  attributes:
-    boulder:
-      revision: 2d33a9900cafe82993744fe73bd341fe47df2171
-    acme:
-      endpoint: http://127.0.0.1:4000
-      contact:
-      - mailto:admin@example.com
+- name: ubuntu-16.04
+  driver:
+    image: ubuntu:16.04
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+      - RUN apt-get install -y sudo curl
