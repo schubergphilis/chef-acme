@@ -29,8 +29,8 @@ Use the `acme_certificate` provider to request a certificate. The webserver for 
 ```ruby
 acme_certificate 'test.example.com' do
   crt               '/etc/ssl/test.example.com.crt'
+  chain             '/etc/ssl/test.example.com-chain.crt'
   key               '/etc/ssl/test.example.com.key'
-  validation_method 'http'
   wwwroot           '/var/www'
 end
 ```
@@ -40,6 +40,7 @@ In case your webserver needs an already existing certificate when installing a n
 ```ruby
 acme_selfsigned 'test.example.com' do
   crt     '/etc/ssl/test.example.com.crt'
+  chain   '/etc/ssl/test.example.com-chain.crt'
   key     '/etc/ssl/test.example.com.key'
 end
 ```
@@ -60,7 +61,6 @@ Providers
 | `fullchain`         | string  | nil      | File path to place the certificate including the chain |
 | `owner`             | string  | root     | Owner of the created files                             |
 | `group`             | string  | root     | Group of the created files                             |
-| `validation_method` | string  | http     | Validation method                                      |
 | `wwwroot`           | string  | /var/www | Path to the wwwroot of the domain                      |
 | `ignore_failure`    | boolean | false    | Whether to continue chef run if issuance fails         |
 | `retries`           | integer | 0        | Number of times to catch exceptions and retry          |
@@ -110,7 +110,6 @@ acme_certificate "#{site}" do
   crt               "/etc/httpd/ssl/#{site}.crt"
   key               "/etc/httpd/ssl/#{site}.key"
   chain             "/etc/httpd/ssl/#{site}.pem"
-  validation_method "http"
   wwwroot           "/var/www/#{site}/htdocs/"
   notifies :restart, "service[apache2]"
   alt_names sans

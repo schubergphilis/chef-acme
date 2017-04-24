@@ -3,6 +3,17 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+3.0.0
+-----
+By changes in Chef 13, the unused property `method` has been removed from the `certificate` provider.
+
+- mattrobenolt - Do not allow a crt without an accompanying chain
+- alex-tan - Improve README
+- rmoriz - Allow setting custom key size
+- szymonpk - Add missing matchers
+- rmoriz - Chef 13 compatibility
+- rmoriz - Multiple CI build improvements
+
 2.0.0
 -----
 - thoutenbos - Rename from `letsencrypt` to `acme` to comply with the ISRG trademark policy
