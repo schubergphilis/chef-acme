@@ -33,7 +33,6 @@ attribute :fullchain,         :kind_of => String, :default => nil
 attribute :owner,             :kind_of => String, :default => 'root'
 attribute :group,             :kind_of => String, :default => 'root'
 
-attribute :validation_method, :kind_of => String, :default => 'http'
 attribute :wwwroot,           :kind_of => String, :default => '/var/www'
 
 attribute :key_size,          :kind_of  => Integer,

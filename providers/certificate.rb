@@ -59,41 +59,30 @@ action :create do
 
       case authz.status
       when 'valid'
-        case new_resource.validation_method
-        when 'http'
-          authz.http01
-        else
-          fail "[#{new_resource.cn}] Invalid validation_method '#{new_resource.validation_method}'"
-        end
+        authz.http01
       when 'pending'
-        case new_resource.validation_method
-        when 'http'
-          tokenpath = "#{new_resource.wwwroot}/#{authz.http01.filename}"
+        tokenpath = "#{new_resource.wwwroot}/#{authz.http01.filename}"
 
-          tokenroot = directory ::File.dirname(tokenpath) do
-            owner     new_resource.owner
-            group     new_resource.group
-            mode      00755
-            recursive true
-          end
-
-          auth_file = file tokenpath do
-            owner   new_resource.owner
-            group   new_resource.group
-            mode    00644
-            content authz.http01.file_content
-          end
-          validation = acme_validate_immediately(authz, 'http01', tokenroot, auth_file)
-
-          if validation.status != 'valid'
-            fail "[#{new_resource.cn}] Validation failed for domain #{authz.domain}"
-          end
-
-          validation
-
-        else
-          fail "[#{new_resource.cn}] Invalid validation validation_method '#{new_resource.validation_method}'"
+        tokenroot = directory ::File.dirname(tokenpath) do
+          owner     new_resource.owner
+          group     new_resource.group
+          mode      00755
+          recursive true
         end
+
+        auth_file = file tokenpath do
+          owner   new_resource.owner
+          group   new_resource.group
+          mode    00644
+          content authz.http01.file_content
+        end
+        validation = acme_validate_immediately(authz, 'http01', tokenroot, auth_file)
+
+        if validation.status != 'valid'
+          fail "[#{new_resource.cn}] Validation failed for domain #{authz.domain}"
+        end
+
+        validation
       end
     end
 
