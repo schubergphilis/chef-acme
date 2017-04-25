@@ -23,6 +23,7 @@ include_recipe 'acme'
 # Generate selfsigned certificate so nginx can start
 acme_selfsigned 'test.example.com' do
   crt     '/etc/ssl/test.example.com.crt'
+  chain   '/etc/ssl/test.example.com-chain.crt'
   key     '/etc/ssl/test.example.com.key'
 end
 
