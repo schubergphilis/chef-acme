@@ -66,6 +66,8 @@ Providers
 | `retries`           | integer | 0        | Number of times to catch exceptions and retry          |
 | `retry_delay`       | integer | 2        | Number of seconds to wait between retries              |
 
+By changes in Chef 13, the property in version 2.0.0 `method` in version 3.0.0 is called `validation_method`.
+
 ### selfsigned
 | Property         | Type    | Default  | Description                                            |
 |  ---             |  ---    |  ---     |  ---                                                   |
