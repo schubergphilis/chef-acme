@@ -5,17 +5,20 @@ ACME cookbook
 [![Cookbook Version](https://img.shields.io/cookbook/v/acme.svg)](https://supermarket.chef.io/cookbooks/acme)
 
 Automatically get/renew free and trusted certificates from Let's Encrypt (letsencrypt.org).
-ACME is the Automated Certificate Management Environment protocol used by Let's Encrypt.
+ACME is the [Automated Certificate Management Environment protocol][1] used by [Let's Encrypt][2].
 
 Attributes
 ----------
-### default
-* `node['acme']['contact']` - Contact information, default empty. Set to `mailto:your@email.com`.
-* `node['acme']['endpoint']` - ACME server endpoint, default `https://acme-v01.api.letsencrypt.org`. Set to `https://acme-staging.api.letsencrypt.org` if you want to use the Let's Encrypt staging environment and corresponding certificates.
-* `node['acme']['renew']` - Days before the certificate expires at which the certificate will be renewed, default `30`.
-* `node['acme']['source_ips']` - IP addresses used by Let's Encrypt to verify the TLS certificates, it will change over time. This attribute is for firewall purposes. Allow these IPs for HTTP (tcp/80).
-* `node['acme']['private_key']` - Private key content of registered account.
-* `node['acme']['key_size']` - Default private key size used when resource property is not. Must be one out of: 2048, 3072, 4096. Defaults to 2048.
+
+| Attribute      | Description                                                                                                                                                              | Default                                  |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |  --------------------------------------: |
+| contact        | Contact information, default empty. Set to `mailto:your@email.com`                                                                                                       |  []                                      |
+| endpoint       | ACME server endpoint, Set to `https://acme-staging.api.letsencrypt.org` if you want to use the Let's Encrypt staging environment and corresponding certificates.         | `https://acme-v01.api.letsencrypt.org`   |
+| renew          | Days before the certificate expires at which the certificate will be renewed                                                                                             |  30                                      |
+| source_ips     | IP addresses used by Let's Encrypt to verify the TLS certificates, it will change over time. This attribute is for firewall purposes. Allow these IPs for HTTP (tcp/80). | ['66.133.109.36']                        |
+| private_key    | Private key content of registered account. Private keys identify the ACME client with the endpoint and are not transferable between staging and production endpoints.    | nil                                      |
+| key_size       | Default private key size used when resource property is not. Must be one out of: 2048, 3072, 4096.                                                                       | 2048                                     |
+
 
 Recipes
 -------
@@ -136,3 +139,6 @@ Authors: Thijs Houtenbos <thoutenbos@schubergphilis.com>
 Credits
 -------
 Let’s Encrypt is a trademark of the Internet Security Research Group. All rights reserved.
+
+[1]: https://ietf-wg-acme.github.io/acme/
+[2]: https://letsencrypt.org/
