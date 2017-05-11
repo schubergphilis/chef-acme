@@ -27,7 +27,7 @@ Installs the required acme-client rubygem.
 
 Usage
 -----
-Use the `acme_certificate` provider to request a certificate. The webserver for the domain for which you are requesting a certificate must be running on the local server. Currently only the http validation method is supported. Provide the path to your `wwwroot` for the specified domain.
+Use the `acme_certificate` resource to request a certificate with the http-01 challange. The webserver for the domain for which you are requesting a certificate must be running on the local server. This resource only supports the http validation method. To use the tls-sni-01 challange, please see the resource below. Provide the path to your `wwwroot` for the specified domain.
 
 ```ruby
 acme_certificate 'test.example.com' do
@@ -38,7 +38,21 @@ acme_certificate 'test.example.com' do
 end
 ```
 
-In case your webserver needs an already existing certificate when installing a new server you will have a bootstrap problem. Webserver cannot start without certificate, but the certificate cannot be requested without the running webserver. To overcome this a self-signed certificate can be generated with the `acme_selfsigned` provider.
+Use the `acme_ssl_certificate` resource to request a certificate using the tls-sni-01 challange. By default an nginx server is expected to be running on the machine that will be configured to complete the challange. Using a differnet webserver is possible by specifying a different provider for the resource, but by default only the nginx provider is implemented (see libraries/ssl_certificate/nginx.rb on how to port the resource for another webserver).
+
+```ruby
+acme_ssl_certificate '/etc/ssl/test.example.com.crt' do
+  cn                'test.example.com'
+  alt_names         ['foo.example.com', 'bar.example.com']
+  output            :crt # or :fullchain
+  key               '/etc/ssl/private/test.example.key.pem'
+  min_validity      30 #Renew certificate if expiry is closed than this many days
+
+  webserver         :nginx
+end
+```
+
+In case your webserver needs an already existing certificate when installing a new server you will have a bootstrap problem. Webserver cannot start without certificate, but the certificate cannot be requested without the running webserver. To overcome this a self-signed certificate can be generated with the `acme_selfsigned` resource.
 
 ```ruby
 acme_selfsigned 'test.example.com' do
@@ -47,6 +61,7 @@ acme_selfsigned 'test.example.com' do
   key     '/etc/ssl/test.example.com.key'
 end
 ```
+
 
 A working example can be found in the included `acme_client` test cookbook.
 

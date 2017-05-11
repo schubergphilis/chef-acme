@@ -29,6 +29,8 @@ verifier:
 
 provisioner:
   name: chef_zero
+  log_level: info
+  require_chef_omnibus: 12.19.36
 
 platforms:
   - name: centos-7
@@ -42,23 +44,42 @@ platforms:
     driver:
       box: bento/ubuntu-14.04
       image: ubuntu-14-04-x64
-
+    attributes:
+      nginx:
+        install_method: source
   - name: ubuntu-16.04
     run_list:
       - recipe[apt]
     driver:
       box: bento/ubuntu-16.04
       image: ubuntu-16-04-x64
+    attributes:
+      nginx:
+        install_method: source
 
 suites:
-  - name: default
-    run_list:
+- name: http
+  run_list:
     - recipe[acme_server]
-    - recipe[acme_client]
-    attributes:
-      boulder:
-        revision: 2d33a9900cafe82993744fe73bd341fe47df2171
-      acme:
-        endpoint: http://127.0.0.1:4000
-        contact:
-        - mailto:admin@example.com
+    - recipe[acme_client::http]
+  attributes:
+    boulder:
+      revision: 2d33a9900cafe82993744fe73bd341fe47df2171
+    acme:
+      endpoint: http://127.0.0.1:4000
+      contact:
+      - mailto:admin@example.com
+
+- name: ssl
+  run_list:
+    - recipe[acme_server]
+    - recipe[acme_client::ssl]
+  attributes:
+    boulder:
+      revision: 2d33a9900cafe82993744fe73bd341fe47df2171
+    acme:
+      endpoint: http://127.0.0.1:4000
+      contact:
+      - mailto:admin@example.com
+    nginx:
+      server_names_hash_bucket_size: 256

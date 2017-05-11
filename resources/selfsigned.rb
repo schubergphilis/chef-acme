@@ -22,6 +22,7 @@ actions :create
 default_action :create
 
 attribute :cn,            :kind_of => String, :name_attribute => true
+attribute :alt_names,     :kind_of => Array,  :default => []
 
 attribute :crt,           :kind_of => String, :default => nil,   :required => true
 attribute :key,           :kind_of => String, :default => nil,   :required => true

@@ -9,10 +9,4 @@ issues_url       'https://github.com/schubergphilis/chef-acme/issues' if respond
 version          '3.0.0'
 chef_version     '>= 12.1' if respond_to?(:chef_version)
 
-supports         'centos'
-supports         'debian'
-supports         'fedora'
-supports         'redhat'
-supports         'ubuntu'
-
 depends 'compat_resource', '>= 12.19'
