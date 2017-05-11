@@ -22,8 +22,6 @@ driver:
   name: vagrant
   customize:
     memory: 1024
-  network:
-    - ["private_network", {ip: "33.33.33.200"}]
 
 verifier:
   root_path: '/opt/verifier'
