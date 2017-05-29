@@ -21,7 +21,7 @@
 default['acme']['contact']     = []
 default['acme']['endpoint']    = 'https://acme-v01.api.letsencrypt.org'
 default['acme']['renew']       = 30
-default['acme']['source_ips']  = ['66.133.109.36']
+default['acme']['source_ips']  = %w(66.133.109.36 64.78.149.164)
 
 default['acme']['private_key'] = nil
 default['acme']['gem_deps']    = true
