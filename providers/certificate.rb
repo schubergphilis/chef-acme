@@ -20,11 +20,21 @@
 
 use_inline_resources
 
+def names_changed?(cert, names)
+  return false if names.empty?
+
+  san_extension = cert.extensions.find { |e| e.oid == 'subjectAltName' }
+  return false if san_extension.nil?
+
+  current = san_extension.value.split(', ').map { |v| v.split(':')[1] }
+  !(names - current).empty? || !(current - names).empty?
+end
+
 action :create do
   unless new_resource.crt.nil? ^ new_resource.fullchain.nil?
     fail "[#{new_resource.cn}] No valid certificate output specified, only one of the crt/fullchain propery is permitted and required"
   end
-  
+
   if new_resource.fullchain.nil? && new_resource.chain.nil?
     fail "[#{new_resource.cn}] No valid chain output specified, a chain is required when outputting a cert"
   end
@@ -45,6 +55,7 @@ action :create do
 
   mycert   = nil
   mykey    = OpenSSL::PKey::RSA.new ::File.read new_resource.key
+  names    = [new_resource.cn, new_resource.alt_names].flatten.compact
   renew_at = ::Time.now + 60 * 60 * 24 * node['acme']['renew']
 
   if !new_resource.crt.nil? && ::File.exist?(new_resource.crt)
@@ -53,8 +64,8 @@ action :create do
     mycert   = ::OpenSSL::X509::Certificate.new ::File.read new_resource.fullchain
   end
 
-  if mycert.nil? || mycert.not_after <= renew_at
-    all_validations = [new_resource.cn, new_resource.alt_names].flatten.compact.map do |domain|
+  if mycert.nil? || mycert.not_after <= renew_at || names_changed?(mycert, names)
+    all_validations = names.map do |domain|
       authz = acme_authz_for domain
 
       case authz.status
