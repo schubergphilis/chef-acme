@@ -26,7 +26,7 @@ def names_changed?(cert, names)
   san_extension = cert.extensions.find { |e| e.oid == 'subjectAltName' }
   return false if san_extension.nil?
 
-  current = san_extension.value.split(', ').map { |v| v.split(':')[1] }
+  current = san_extension.value.split(', ').select { |v| v.start_with?('DNS:') }.map { |v| v.split(':')[1] }
   !(names - current).empty? || !(current - names).empty?
 end
 
