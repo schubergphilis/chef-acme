@@ -32,7 +32,7 @@ attribute :key,                 :kind_of => String, :required => true
 attribute :owner,               :kind_of => String
 attribute :group,               :kind_of => String
 
-attribute :min_validity,        :kind_of => Integer, :min => 0
+attribute :min_validity,        :kind_of => Integer
 
 attribute :validation_method,   :kind_of => Symbol, :default => :tls_sni01
 
