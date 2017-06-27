@@ -80,3 +80,8 @@ describe x509_certificate('/etc/ssl/4096.example.com.crt') do
   its(:subject) { should match '/CN=4096.example.com/' }
   its(:issuer) { should eq '/CN=happy hacker fake CA' }
 end
+
+describe command('openssl x509 -in /etc/ssl/web.example.com.crt -noout -text') do
+  its(:stdout) { should match(/DNS:web.example.com/) }
+  its(:stdout) { should match(/DNS:mail.example.com/) }
+end
