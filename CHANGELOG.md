@@ -3,6 +3,15 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+3.1.0
+-----
+- axos88 - Add ssl validation method
+- notapatch - Update README
+- funzoneq - Extra validation server IP
+- faucct - Remove unknown attribute validation 'min'
+- faucct - Make sure nginx reloads
+- wndhydrnt - Update certificate when common name / alternate names change
+
 3.0.0
 -----
 By changes in Chef 13, the unused property `method` has been removed from the `certificate` provider.
