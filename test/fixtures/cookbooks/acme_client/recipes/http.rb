@@ -52,3 +52,20 @@ acme_certificate '4096.example.com' do
   key_size          4096
   wwwroot           node['nginx']['default_root']
 end
+
+acme_certificate 'web.example.com' do
+  fullchain         '/etc/ssl/web.example.com.crt'
+  chain             '/etc/ssl/web.example.com-chain.crt'
+  key               '/etc/ssl/web.example.com.key'
+  wwwroot           node['nginx']['default_root']
+  notifies          :reload, 'service[nginx]'
+end
+
+acme_certificate 'web.example.com' do
+  alt_names         ['mail.example.com']
+  fullchain         '/etc/ssl/web.example.com.crt'
+  chain             '/etc/ssl/web.example.com-chain.crt'
+  key               '/etc/ssl/web.example.com.key'
+  wwwroot           node['nginx']['default_root']
+  notifies          :reload, 'service[nginx]'
+end
