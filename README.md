@@ -38,7 +38,7 @@ acme_certificate 'test.example.com' do
 end
 ```
 
-Use the `acme_ssl_certificate` resource to request a certificate using the tls-sni-01 challange. By default an nginx server is expected to be running on the machine that will be configured to complete the challange. Using a differnet webserver is possible by specifying a different provider for the resource, but by default only the nginx provider is implemented (see libraries/ssl_certificate/nginx.rb on how to port the resource for another webserver).
+Use the `acme_ssl_certificate` resource to request a certificate using the tls-sni-01 challange. By default an nginx server is expected to be running on the machine that will be configured to complete the challange. Using a different webserver is possible by specifying a different provider for the resource, but by default only the nginx provider is implemented (see libraries/ssl_certificate/nginx.rb on how to port the resource for another webserver).
 
 ```ruby
 acme_ssl_certificate '/etc/ssl/test.example.com.crt' do
