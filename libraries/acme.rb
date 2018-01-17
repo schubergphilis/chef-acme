@@ -30,7 +30,9 @@ def acme_client
 
   private_key = OpenSSL::PKey::RSA.new(node['acme']['private_key'].nil? ? 2048 : node['acme']['private_key'])
 
-  @client = Acme::Client.new(private_key: private_key, endpoint: node['acme']['endpoint'])
+  endpoint = new_resource.endpoint.nil? ? node['acme']['endpoint'] : new_resource.endpoint
+
+  @client = Acme::Client.new(private_key: private_key, endpoint: endpoint)
 
   if node['acme']['private_key'].nil?
     registration = acme_client.register(contact: node['acme']['contact'])
