@@ -25,17 +25,18 @@ rescue LoadError => e
 end
 
 def acme_client
-  Chef::Application.fatal!('Acme requires that a contact is specified') if node['acme']['contact'].empty?
   return @client if @client
 
   private_key = OpenSSL::PKey::RSA.new(node['acme']['private_key'].nil? ? 2048 : node['acme']['private_key'])
 
   endpoint = new_resource.endpoint.nil? ? node['acme']['endpoint'] : new_resource.endpoint
 
+  contact = new_resource.contact.nil? ? node['acme']['contact'] : new_resource.contact
+
   @client = Acme::Client.new(private_key: private_key, endpoint: endpoint)
 
   if node['acme']['private_key'].nil?
-    registration = acme_client.register(contact: node['acme']['contact'])
+    registration = acme_client.register(contact: contact)
     registration.agree_terms
     node.normal['acme']['private_key'] = private_key.to_pem
   end

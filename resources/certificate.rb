@@ -41,3 +41,4 @@ attribute :key_size,          :kind_of  => Integer,
                                :required => true
 
 attribute :endpoint,          :kind_of => String, :default => nil
+attribute :contact,           :kind_of => Array, :default => []
