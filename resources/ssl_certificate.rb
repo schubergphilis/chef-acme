@@ -36,6 +36,9 @@ attribute :min_validity,        :kind_of => Integer
 
 attribute :validation_method,   :kind_of => Symbol, :default => :tls_sni01
 
+attribute :endpoint, :kind_of => String, :default => nil
+attribute :contact, :kind_of => Array, :default => []
+
 def webserver(server)
 	sym = server.to_sym.capitalize
 
