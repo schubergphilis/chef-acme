@@ -39,3 +39,6 @@ attribute :key_size,          :kind_of  => Integer,
                                :default  => node['acme']['key_size'],
                                :equal_to => [2048, 3072, 4096],
                                :required => true
+
+attribute :endpoint,          :kind_of => String, :default => nil
+attribute :contact,           :kind_of => Array, :default => []

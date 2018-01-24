@@ -83,6 +83,8 @@ Providers
 | `ignore_failure`    | boolean | false    | Whether to continue chef run if issuance fails         |
 | `retries`           | integer | 0        | Number of times to catch exceptions and retry          |
 | `retry_delay`       | integer | 2        | Number of seconds to wait between retries              |
+| `endpoint`          | string  | nil      | The Let's Encrypt endpoint to use                      |
+| `contact`           | array   | []       | The contact to use                                     |
 
 ### selfsigned
 | Property         | Type    | Default  | Description                                            |
