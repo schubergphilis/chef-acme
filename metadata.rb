@@ -10,3 +10,6 @@ version          '3.1.0'
 chef_version     '>= 12.5' if respond_to?(:chef_version)
 
 depends 'compat_resource', '>= 12.19'
+
+supports 'ubuntu', '>= 16.04'
+supports 'centos', '~> 7'
