@@ -69,17 +69,3 @@ suites:
       endpoint: http://127.0.0.1:4000
       contact:
       - mailto:admin@example.com
-
-- name: ssl
-  run_list:
-    - recipe[acme_server]
-    - recipe[acme_client::ssl]
-  attributes:
-    boulder:
-      revision: 2d33a9900cafe82993744fe73bd341fe47df2171
-    acme:
-      endpoint: http://127.0.0.1:4000
-      contact:
-      - mailto:admin@example.com
-    nginx:
-      server_names_hash_bucket_size: 256
