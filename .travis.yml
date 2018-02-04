@@ -27,7 +27,6 @@ matrix:
 before_install:
   - eval "$(/opt/chefdk/bin/chef shell-init bash)"
   - chef --version
-  - docker --version
 
 # We are using ChefDK so no gem install required.
 # https://docs.travis-ci.com/user/customizing-the-build#Skipping-the-Installation-Step
