@@ -36,3 +36,34 @@ attribute :key_size,      :kind_of  => Integer,
                           :default  => node['acme']['key_size'],
                           :equal_to => [2048, 3072, 4096],
                           :required => true
+
+action :create do
+  file "#{new_resource.cn} SSL selfsigned key" do
+    path      new_resource.key
+    owner     new_resource.owner
+    group     new_resource.group
+    mode      00400
+    content   OpenSSL::PKey::RSA.new(new_resource.key_size).to_pem
+    sensitive true
+    action    :create_if_missing
+  end
+
+  file "#{new_resource.cn} SSL selfsigned crt" do
+    path    new_resource.crt
+    owner   new_resource.owner
+    group   new_resource.group
+    mode    00644
+    content lazy { self_signed_cert(new_resource.cn, new_resource.alt_names, OpenSSL::PKey::RSA.new(::File.read(new_resource.key))).to_pem }
+    action  :create_if_missing
+  end
+
+  file "#{new_resource.cn} SSL selfsigned chain" do
+    path    new_resource.chain unless new_resource.chain.nil?
+    owner   new_resource.owner
+    group   new_resource.group
+    mode    00644
+    content lazy { self_signed_cert(new_resource.cn, new_resource.alt_names, OpenSSL::PKey::RSA.new(::File.read(new_resource.key))).to_pem }
+    not_if  { new_resource.chain.nil? }
+    action  :create_if_missing
+  end
+end
