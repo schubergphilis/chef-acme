@@ -106,7 +106,7 @@ def self_signed_cert(cn, alts, key)
 
   cert.extensions += [ef.create_extension('basicConstraints', 'CA:FALSE', true)]
   cert.extensions += [ef.create_extension('subjectKeyIdentifier', 'hash')]
-  cert.extensions += [ef.create_extension('subjectAltName', alts.map { |d| "DNS:#{d}"}.join(','))] if alts.length > 0
+  cert.extensions += [ef.create_extension('subjectAltName', alts.map { |d| "DNS:#{d}" }.join(','))] unless alts.empty?
 
   cert.sign key, OpenSSL::Digest::SHA256.new
 end

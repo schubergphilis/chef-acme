@@ -24,7 +24,7 @@ include_recipe 'chef_nginx'
 nginx_site 'test' do
   template 'nginx-test.conf'
 
-  notifies :reload, "service[nginx]", :immediately
+  notifies :reload, 'service[nginx]', :immediately
 end
 
 directory node['nginx']['default_root'] do
@@ -36,4 +36,3 @@ end
 cookbook_file "#{node['nginx']['default_root']}/index.html" do
   source 'index.html'
 end
-

@@ -4,15 +4,10 @@ class Chef
   class Provider
     class SSLCertificate
       class Nginx < ::Chef::Provider::SSLCertificate
-
         def initialize(*args)
           super(*args)
 
-          if node.automatic_attrs[:nginx][:version].is_a?(String)
-            unless Chef::VersionConstraint.new(">= 1.10").include?(node.automatic_attrs[:nginx][:version])
-              Chef::Log.warn("This provider has not been tested with nginx < 1.10")
-            end
-          end
+          Chef::Log.warn 'This provider has not been tested with nginx < 1.10' if Chef::VersionConstraint.new('< 1.10').include? node['nginx']['version']
         end
 
         attr_reader :nginx
@@ -53,11 +48,9 @@ class Chef
             template 'acme-challange.nginx.erb'
             cookbook 'acme'
 
-            variables({
-              host: hostname,
-              cert: cert_path,
-              key: key_path
-            })
+            variables(host: hostname,
+                      cert: cert_path,
+                      key: key_path)
           end
 
           service 'nginx' do
@@ -71,7 +64,7 @@ class Chef
 
             block do
               Timeout.timeout(1) do
-                tcp_client = TCPSocket.new("localhost", 443)
+                tcp_client = TCPSocket.new('localhost', 443)
                 ssl_context = OpenSSL::SSL::SSLContext.new()
                 ssl_context.ssl_version = :TLSv1
                 ssl_client = OpenSSL::SSL::SSLSocket.new(tcp_client, ssl_context)
@@ -81,7 +74,7 @@ class Chef
                 ssl_client.sysclose
                 tcp_client.close
 
-                Chef::Log.debug("Got certificate from nginx: #{cert.to_pem}" )
+                Chef::Log.debug("Got certificate from nginx: #{cert.to_pem}")
 
                 extensions = cert.extensions || []
                 alt_extension = extensions.find { |x| x.oid == 'subjectAltName' }
@@ -90,7 +83,7 @@ class Chef
 
                 if !!alt_extension
                   data = OpenSSL::ASN1.decode(alt_extension).value[1].value
-                  alt_names = OpenSSL::ASN1.decode(data).map { |x| x.value }
+                  alt_names = OpenSSL::ASN1.decode(data).map(&:value)
                 end
 
                 cn = cert.subject.to_a.map { |x| x[1] if x[0] == 'CN' }
@@ -103,7 +96,7 @@ class Chef
           end
         end
 
-        def teardown_challanges(validation)
+        def teardown_challanges(_validation)
           nginx_site "acme-#{new_resource.cn}" do
             action :disable
           end

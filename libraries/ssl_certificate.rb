@@ -18,11 +18,9 @@
 # limitations under the License.
 #
 
-
 class Chef
   class Provider
     class SSLCertificate < Chef::Provider::LWRPBase
-
       attr_reader :challanges
 
       use_inline_resources
@@ -49,10 +47,10 @@ class Chef
 
         if !!alt_extension
           data = OpenSSL::ASN1.decode(alt_extension).value[1].value
-          current_alt_names = OpenSSL::ASN1.decode(data).map { |x| x.value }
+          current_alt_names = OpenSSL::ASN1.decode(data).map(&:value)
         end
 
-        #We ignore if the cn is among the subjectAltNames in one or the other certificate.
+        # We ignore if the cn is among the subjectAltNames in one or the other certificate.
         current_cn = @current_cert.subject.to_a.map { |x| x[1] if x[0] == 'CN' }
 
         (current_alt_names | [current_cn]).flatten.compact.sort.uniq == (new_resource.alt_names | [new_resource.cn]).flatten.compact.sort.uniq
@@ -83,83 +81,79 @@ class Chef
           @current_cert = ::OpenSSL::X509::Certificate.new ::File.read new_resource.path
         end
 
-        unless (!@current_cert.nil? && check_renewal && check_cn && check_alt_names && check_pkey)
-          ::Chef::Log.info("Renewing ACME certificate for #{@new_resource.cn}: renewal = #{check_renewal}, cn = #{check_cn}, alt_name = #{check_alt_names}, pkey = #{check_pkey}")
-          ::Chef::Log.warn("WARN Renewing ACME certificate for #{@new_resource.cn}: renewal = #{check_renewal}, cn = #{check_cn}, alt_name = #{check_alt_names}, pkey = #{check_pkey}")
+        return unless !@current_cert.nil? && check_renewal && check_cn && check_alt_names && check_pkey
 
-          converge_by("Renew ACME certifiacte") do
-            validations = [new_resource.cn, new_resource.alt_names].flatten.compact.uniq.map do |domain|
-              authz = acme_authz_for(domain)
+        ::Chef::Log.info("Renewing ACME certificate for #{@new_resource.cn}: renewal = #{check_renewal}, cn = #{check_cn}, alt_name = #{check_alt_names}, pkey = #{check_pkey}")
+        ::Chef::Log.warn("WARN Renewing ACME certificate for #{@new_resource.cn}: renewal = #{check_renewal}, cn = #{check_cn}, alt_name = #{check_alt_names}, pkey = #{check_pkey}")
 
-              case authz.status
-              when 'valid'
-                ::Chef::Log.info("Authz #{domain} valid")
-                [domain, 'valid']
+        converge_by('Renew ACME certifiacte') do
+          validations = [new_resource.cn, new_resource.alt_names].flatten.compact.uniq.map do |domain|
+            authz = acme_authz_for(domain)
 
-              when 'pending'
-                ::Chef::Log.info("Authz #{domain} pending")
-                validation = authz.send(new_resource.validation_method)
+            case authz.status
+            when 'valid'
+              ::Chef::Log.info("Authz #{domain} valid")
+              [domain, 'valid']
 
-                ::Chef::Log.info("Setting up verification...")
+            when 'pending'
+              ::Chef::Log.info("Authz #{domain} pending")
+              validation = authz.send(new_resource.validation_method)
 
-                compile_and_converge_action { setup_challanges(validation) }
+              ::Chef::Log.info('Setting up verification...')
 
-                ::Chef::Log.info("Requesting verification...")
+              compile_and_converge_action { setup_challanges(validation) }
 
-                validation.request_verification
+              ::Chef::Log.info('Requesting verification...')
 
-                ::Chef::Log.info("Waiting for verification...")
+              validation.request_verification
 
-                times = 60
+              ::Chef::Log.info('Waiting for verification...')
 
-                while times > 0
-                  break unless validation.verify_status == 'pending'
-                  times -= 1
-                  sleep 1
-                end
+              times = 60
 
-                ::Chef::Log.info("Tearing down verification...")
-
-                compile_and_converge_action { teardown_challanges(validation) }
-
-                ::Chef::Log.info("Result: #{validation.status}")
-
-                [domain, validation.status]
-              end
-            end
-
-            failed_validations = validations.reject { |v| v[1] == 'valid' }
-            fail "Validation failed for some domains: #{failed_validations}" unless failed_validations.empty?
-
-            begin
-              newcert = acme_cert(new_resource.cn, @current_key, new_resource.alt_names)
-            rescue Acme::Client::Error => e
-              fail "[#{new_resource.cn}] Certificate request failed: #{e.message}"
-            else
-
-              cert_data = case new_resource.output
-              when :fullchain
-                newcert.fullchain_to_pem
-              when :crt
-                newcert.to_pem
-              else
-                fail "Unknown output type: #{new_resource.output}"
+              while times > 0
+                break unless validation.verify_status == 'pending'
+                times -= 1
+                sleep 1
               end
 
-              key_data = @current_key
+              ::Chef::Log.info('Tearing down verification...')
 
-              file new_resource.path do
-                content cert_data
+              compile_and_converge_action { teardown_challanges(validation) }
 
-                owner new_resource.owner
-                group new_resource.group
-                mode 00644
-              end.run_action(:create)
+              ::Chef::Log.info("Result: #{validation.status}")
+
+              [domain, validation.status]
             end
+          end
+
+          failed_validations = validations.reject { |v| v[1] == 'valid' }
+          fail "Validation failed for some domains: #{failed_validations}" unless failed_validations.empty?
+
+          begin
+            newcert = acme_cert(new_resource.cn, @current_key, new_resource.alt_names)
+          rescue Acme::Client::Error => e
+            fail "[#{new_resource.cn}] Certificate request failed: #{e.message}"
+          else
+            cert_data = case new_resource.output
+                        when :fullchain
+                          newcert.fullchain_to_pem
+                        when :crt
+                          newcert.to_pem
+                        else
+                          fail "Unknown output type: #{new_resource.output}"
+                        end
+
+            file new_resource.path do
+              content cert_data
+
+              owner new_resource.owner
+              group new_resource.group
+              mode 00644
+            end.run_action(:create)
           end
         end
       end
     end
   end
 end
-

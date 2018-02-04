@@ -35,10 +35,10 @@ attribute :group,             :kind_of => String, :default => 'root'
 
 attribute :wwwroot,           :kind_of => String, :default => '/var/www'
 
-attribute :key_size,          :kind_of  => Integer,
-                               :default  => node['acme']['key_size'],
-                               :equal_to => [2048, 3072, 4096],
-                               :required => true
+attribute :key_size,          :kind_of => Integer,
+                              :default  => node['acme']['key_size'],
+                              :equal_to => [2048, 3072, 4096],
+                              :required => true
 
 attribute :endpoint,          :kind_of => String, :default => nil
 attribute :contact,           :kind_of => Array, :default => []
@@ -122,33 +122,33 @@ action :create do
 
     ruby_block "create certificate for #{new_resource.cn}" do
       block do
-        if (all_validations.map { |authz| authz.status == 'valid' }).all?
-          begin
-            newcert = acme_cert(new_resource.cn, mykey, new_resource.alt_names)
-          rescue Acme::Client::Error => e
-            fail "[#{new_resource.cn}] Certificate request failed: #{e.message}"
-          else
-            Chef::Resource::File.new("#{new_resource.cn} SSL new crt", run_context).tap do |f|
-              f.path    new_resource.crt || new_resource.fullchain
+        unless (all_validations.map { |authz| authz.status == 'valid' }).all?
+          fail "[#{new_resource.cn}] Validation failed, unable to request certificate"
+        end
+
+        begin
+          newcert = acme_cert(new_resource.cn, mykey, new_resource.alt_names)
+        rescue Acme::Client::Error => e
+          fail "[#{new_resource.cn}] Certificate request failed: #{e.message}"
+        else
+          Chef::Resource::File.new("#{new_resource.cn} SSL new crt", run_context).tap do |f|
+            f.path    new_resource.crt || new_resource.fullchain
+            f.owner   new_resource.owner
+            f.group   new_resource.group
+            f.content new_resource.crt.nil? ? newcert.fullchain_to_pem : newcert.to_pem
+            f.mode    00644
+          end.run_action :create
+
+          if new_resource.chain
+            Chef::Resource::File.new("#{new_resource.cn} SSL new chain", run_context).tap do |f|
+              f.path    new_resource.chain
               f.owner   new_resource.owner
               f.group   new_resource.group
-              f.content new_resource.crt.nil? ? newcert.fullchain_to_pem : newcert.to_pem
+              f.content newcert.chain_to_pem
+              f.not_if  { new_resource.chain.nil? }
               f.mode    00644
             end.run_action :create
-
-            if new_resource.chain
-              Chef::Resource::File.new("#{new_resource.cn} SSL new chain", run_context).tap do |f|
-                f.path    new_resource.chain
-                f.owner   new_resource.owner
-                f.group   new_resource.group
-                f.content newcert.chain_to_pem
-                f.not_if  { new_resource.chain.nil? }
-                f.mode    00644
-              end.run_action :create
-            end
           end
-        else
-          fail "[#{new_resource.cn}] Validation failed, unable to request certificate"
         end
       end
     end
