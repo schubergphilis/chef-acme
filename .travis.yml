@@ -13,6 +13,8 @@ cache:
   apt: true
 
 env:
+  global:
+    - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
   matrix:
     - INSTANCE=centos-7
     - INSTANCE=ubuntu-1604
@@ -32,5 +34,5 @@ before_install:
 install: true
 
 script:
-  - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml /opt/chefdk/embedded/bin/kitchen verify ${INSTANCE}
+  - kitchen verify ${INSTANCE}
   # TODO: add rubocop/cookstyle and foocritic checks
