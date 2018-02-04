@@ -68,7 +68,7 @@ class Chef
         @current_cert.check_private_key(@current_key)
       end
 
-      def action_create
+      action :create do
         key = acme_ssl_key new_resource.key do
           action :nothing
         end
