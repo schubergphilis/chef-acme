@@ -16,13 +16,15 @@ env:
   global:
     - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
   matrix:
-    - INSTANCE=centos-7
-    - INSTANCE=ubuntu-1604
+    - CMD="chef exec cookstyle --display-cop-names --extra-details"
+    - CMD="chef exec foodcritic ."
+    - CMD="kitchen verify centos-7"
+    - CMD="kitchen verify ubuntu-1604"
 
 matrix:
   fast_finish: true
   allow_failures:
-    - env: INSTANCE=ubuntu-1604
+    - env: CMD="kitchen verify ubuntu-1604"
 
 before_install:
   - eval "$(/opt/chefdk/bin/chef shell-init bash)"
@@ -32,6 +34,4 @@ before_install:
 # https://docs.travis-ci.com/user/customizing-the-build#Skipping-the-Installation-Step
 install: true
 
-script:
-  - kitchen verify ${INSTANCE}
-  # TODO: add rubocop/cookstyle and foocritic checks
+script: ${CMD}
