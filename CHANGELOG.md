@@ -3,6 +3,10 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+3.2.0
+-----
+- ibaum - Add contacts and endpoint properties
+
 3.1.0
 -----
 - axos88 - Add ssl validation method
