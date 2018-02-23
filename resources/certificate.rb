@@ -21,27 +21,24 @@
 actions :create
 default_action :create
 
-attribute :cn,                :kind_of => String, :name_attribute => true
-attribute :alt_names,         :kind_of => Array,  :default => []
+property :cn,         String, name_property: true
+property :alt_names,  Array,  default: []
 
-attribute :crt,               :kind_of => String, :default => nil
-attribute :key,               :kind_of => String, :default => nil
+property :crt,        [String, nil], default: nil
+property :key,        [String, nil], default: nil
 
-attribute :chain,             :kind_of => String, :default => nil
-attribute :fullchain,         :kind_of => String, :default => nil
+property :chain,      [String, nil], default: nil
+property :fullchain,  [String, nil], default: nil
 
-attribute :owner,             :kind_of => String, :default => 'root'
-attribute :group,             :kind_of => String, :default => 'root'
+property :owner,      String, default: 'root'
+property :group,      String, default: 'root'
 
-attribute :wwwroot,           :kind_of => String, :default => '/var/www'
+property :wwwroot,    String, default: '/var/www'
 
-attribute :key_size,          :kind_of => Integer,
-                              :default  => node['acme']['key_size'],
-                              :equal_to => [2048, 3072, 4096],
-                              :required => true
+property :key_size,   Integer, default: node['acme']['key_size'], required: true, equal_to: [2048, 3072, 4096]
 
-attribute :endpoint,          :kind_of => String, :default => nil
-attribute :contact,           :kind_of => Array, :default => []
+property :endpoint,   [String, nil], default: nil
+property :contact,    Array, default: []
 
 def names_changed?(cert, names)
   return false if names.empty?
