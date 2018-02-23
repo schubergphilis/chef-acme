@@ -1,4 +1,3 @@
-actions [:create, :create_if_missing, :destroy]
 default_action :create_if_missing
 
 property :path,          String, :name_attribute => true
