@@ -38,20 +38,6 @@ acme_certificate 'test.example.com' do
 end
 ```
 
-Use the `acme_ssl_certificate` resource to request a certificate using the tls-sni-01 challange. By default an nginx server is expected to be running on the machine that will be configured to complete the challange. Using a different webserver is possible by specifying a different provider for the resource, but by default only the nginx provider is implemented (see libraries/ssl_certificate/nginx.rb on how to port the resource for another webserver).
-
-```ruby
-acme_ssl_certificate '/etc/ssl/test.example.com.crt' do
-  cn                'test.example.com'
-  alt_names         ['foo.example.com', 'bar.example.com']
-  output            :crt # or :fullchain
-  key               '/etc/ssl/private/test.example.key.pem'
-  min_validity      30 #Renew certificate if expiry is closed than this many days
-
-  webserver         :nginx
-end
-```
-
 In case your webserver needs an already existing certificate when installing a new server you will have a bootstrap problem. Webserver cannot start without certificate, but the certificate cannot be requested without the running webserver. To overcome this a self-signed certificate can be generated with the `acme_selfsigned` resource.
 
 ```ruby
@@ -106,9 +92,9 @@ To generate a certificate for an apache2 website you can use code like this:
 include_recipe 'acme'
 
 # Set up contact information. Note the mailto: notation
-node.set['acme']['contact'] = ['mailto:me@example.com']
+node.override['acme']['contact'] = ['mailto:me@example.com']
 # Real certificates please...
-node.set['acme']['endpoint'] = 'https://acme-v01.api.letsencrypt.org'
+node.override['acme']['endpoint'] = 'https://acme-v01.api.letsencrypt.org'
 
 site = "example.com"
 sans = ["www.#{site}"]
