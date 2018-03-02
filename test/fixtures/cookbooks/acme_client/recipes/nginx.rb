@@ -18,8 +18,15 @@
 # limitations under the License.
 #
 
+# Work around an NGINX issue on CentOS
+# https://github.com/chef-cookbooks/nginx/issues/441
+yum_package 'openssl' do
+  action :upgrade
+  only_if { platform_family?('rhel') }
+end
+
 # Install a webserver
-include_recipe 'chef_nginx'
+include_recipe 'nginx'
 
 nginx_site 'test' do
   template 'nginx-test.conf'
