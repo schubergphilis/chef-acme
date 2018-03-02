@@ -5,8 +5,8 @@ driver:
     memory: 1024
 
 verifier:
-  root_path: '/opt/verifier'
-  sudo: false
+  root_path: '/tmp/verifier'
+  sudo: true
 
 provisioner:
   name: chef_zero
@@ -16,7 +16,7 @@ provisioner:
 platforms:
   - name: centos-7
     driver:
-      box: bento/centos-7.3 # virtualbox, vmware, parallels
+      box: centos/7 # virtualbox, vmware, parallels
       image: centos-7-0-x64 # digitalocean
 
   - name: ubuntu-14.04

@@ -116,7 +116,7 @@ action :create do
       end
     end
 
-    ruby_block "create certificate for #{new_resource.cn}" do
+    ruby_block "create certificate for #{new_resource.cn}" do # ~FC014
       block do
         unless (all_validations.map { |authz| authz.status == 'valid' }).all?
           fail "[#{new_resource.cn}] Validation failed, unable to request certificate"
