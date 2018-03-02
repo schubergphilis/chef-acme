@@ -7,6 +7,10 @@ ACME cookbook
 Automatically get/renew free and trusted certificates from Let's Encrypt (letsencrypt.org).
 ACME is the [Automated Certificate Management Environment protocol][1] used by [Let's Encrypt][2].
 
+```
+Starting with v4.0.0 of the acme cookbook the acme_ssl_certificate provider has been removed! The TLS-SNI-01 validation method used by this provider been disabled by Let's Encrypt due to security concerns. Please switch to the acme_certificate provider in this cookbook to request and renew your certificate using the supported HTTP-01 validation method.
+```
+
 Attributes
 ----------
 

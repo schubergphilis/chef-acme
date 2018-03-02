@@ -3,6 +3,17 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+4.0.0
+-----
+The TLS-SNI-01 validation method has been removed as it is no longer supported by Let's Encrypt.
+
+- borgified - Documentation fix
+- ibaum - Override endpoint from provider
+- jeffbyrnes - Removed support for TLS-SNI-01 validation
+- jeffbyrnes - Refactor LWRPs into Custom Resources
+- jeffbyrnes - Foodcritic, cookstyle and build improvements
+- thoutenbos - Upgrade acme-client gem to v0.6.2
+
 3.1.0
 -----
 - axos88 - Add ssl validation method
