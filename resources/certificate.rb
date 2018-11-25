@@ -63,7 +63,7 @@ action :create do
   renew_at = ::Time.now + 60 * 60 * 24 * node['acme']['renew']
 
   if !new_resource.crt.nil? && ::File.exist?(new_resource.crt)
-    mycert   = ::OpenSSL::X509::Certificate.new ::File.read new_resource.crt
+    mycert = ::OpenSSL::X509::Certificate.new ::File.read new_resource.crt
   end
 
   if mycert.nil? || mycert.not_after <= renew_at || names_changed?(mycert, names)

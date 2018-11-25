@@ -10,8 +10,7 @@ verifier:
 
 provisioner:
   name: chef_zero
-  log_level: info
-  require_chef_omnibus: 12.19.36
+  always_update_cookbooks: true
 
 platforms:
   - name: centos-7

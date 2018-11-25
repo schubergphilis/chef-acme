@@ -9,8 +9,6 @@ issues_url       'https://github.com/schubergphilis/chef-acme/issues' if respond
 version          '4.0.0'
 chef_version     '>= 12.5' if respond_to?(:chef_version)
 
-depends 'compat_resource', '>= 12.19'
-
 %w(ubuntu debian redhat centos fedora).each do |os|
   supports os
 end
