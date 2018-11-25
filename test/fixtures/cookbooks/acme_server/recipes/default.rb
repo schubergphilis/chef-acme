@@ -18,16 +18,39 @@
 # limitations under the License.
 #
 
-file 'hosts' do
-  path '/etc/hosts'
-  atomic_update false
-  content "127.0.0.1\tlocalhost boulder boulder-rabbitmq boulder-mysql test.example.com new.example.com web.example.com mail.example.com"
+include_recipe 'golang::default'
+
+bash 'install pebble' do
+  code <<-EOC
+  source /etc/profile.d/golang.sh
+  go get -u #{node['pebble']['package']}/...
+  cd $GOPATH/src/#{node['pebble']['package']} && go install ./...
+  EOC
+  creates "#{node['go']['gopath']}/src/#{node['pebble']['package']}"
 end
 
-include_recipe 'letsencrypt-boulder-server'
+# Needed for the acme-client gem to continue connecting to pebble;
+# please do NOT do this on production Chef nodes!
+bash 'update Chef trusted certificates store' do
+  code <<-EOC
+  cat #{node['go']['gopath']}/src/#{node['pebble']['package']}/test/certs/pebble.minica.pem >> /opt/chef/embedded/ssl/certs/cacert.pem
+  touch /opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED
+  EOC
+  creates '/opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED'
+end
 
-# awaiting https://github.com/customink-webops/hostsfile/pull/78
-# edit_resource is a chef 12.10/compat_resource feature
-edit_resource(:hostsfile_entry, '127.0.0.1') do
-  action :nothing
+poise_service_user 'pebble'
+
+# let pebble always validate and never reject requests
+poise_service 'pebble' do
+  command "#{node['go']['gobin']}/pebble -config ./test/config/pebble-config.json"
+  user 'pebble'
+  directory "#{node['go']['gopath']}/src/github.com/letsencrypt/pebble"
+  environment(
+    'GOPATH' => node['go']['gopath'],
+    'GOBIN' => node['go']['gobin'],
+    'PEBBLE_VA_ALWAYS_VALID' => 1,
+    'PEBBLE_VA_NOSLEEP' => 1,
+    'PEBBLE_WFE_NONCEREJECT' => 0
+  )
 end
