@@ -74,14 +74,14 @@ action :create do
 
       tokenpath = "#{new_resource.wwwroot}/#{authz.filename}"
 
-      tokenroot = directory ::File.dirname(tokenpath) do
+      directory ::File.dirname(tokenpath) do
         owner     new_resource.owner
         group     new_resource.group
         mode      00755
         recursive true
       end
 
-      auth_file = file tokenpath do
+      file tokenpath do
         owner   new_resource.owner
         group   new_resource.group
         mode    00644

@@ -36,7 +36,7 @@ def acme_client
   @client = Acme::Client.new(private_key: private_key, directory: directory)
 
   if node['acme']['private_key'].nil?
-    registration = acme_client.new_account(contact: contact, terms_of_service_agreed: true)
+    acme_client.new_account(contact: contact, terms_of_service_agreed: true)
     node.normal['acme']['private_key'] = private_key.to_pem
   end
 
