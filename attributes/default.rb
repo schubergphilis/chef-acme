@@ -19,10 +19,10 @@
 #
 
 default['acme']['contact']     = []
-default['acme']['endpoint']    = 'https://acme-v01.api.letsencrypt.org'
+default['acme']['directory']   = 'https://acme-v02.api.letsencrypt.org/directory'
 default['acme']['renew']       = 30
 default['acme']['source_ips']  = %w(66.133.109.36 64.78.149.164)
 
 default['acme']['private_key'] = nil
-default['acme']['gem_version'] = '0.6.2'
+default['acme']['gem_version'] = '2.0.1'
 default['acme']['key_size']    = 2048
