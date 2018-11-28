@@ -36,6 +36,11 @@ property :key_size,   Integer, default: node['acme']['key_size'], required: true
 property :directory,  [String, nil], default: nil
 property :contact,    Array, default: []
 
+property :chain, String, deprecated: 'The chain property has been deprecated as the acme-client gem now returns the full certificate chain by default (on the crt property.) Please update your cookbooks to remove this property.'
+property :fullchain, String, deprecated: 'The fullchain property has been deprecated as the acme-client gem now returns the full certificate chain by default (on the crt property.) Please update your cookbooks to remove this property.'
+
+deprecated_property_alias 'endpoint', 'directory', 'The endpoint property was renamed to directory, to reflect ACME v2 changes. Please update your cookbooks to use the new property name.'
+
 def names_changed?(cert, names)
   return false if names.empty?
 
