@@ -14,14 +14,14 @@ Starting with v4.0.0 of the acme cookbook the acme_ssl_certificate provider has 
 Attributes
 ----------
 
-| Attribute      | Description                                                                                                                                                              | Default                                  |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |  --------------------------------------: |
-| contact        | Contact information, default empty. Set to `mailto:your@email.com`                                                                                                       |  []                                      |
-| endpoint       | ACME server endpoint, Set to `https://acme-staging.api.letsencrypt.org` if you want to use the Let's Encrypt staging environment and corresponding certificates.         | `https://acme-v01.api.letsencrypt.org`   |
-| renew          | Days before the certificate expires at which the certificate will be renewed                                                                                             |  30                                      |
-| source_ips     | IP addresses used by Let's Encrypt to verify the TLS certificates, it will change over time. This attribute is for firewall purposes. Allow these IPs for HTTP (tcp/80). | ['66.133.109.36']                        |
-| private_key    | Private key content of registered account. Private keys identify the ACME client with the endpoint and are not transferable between staging and production endpoints.    | nil                                      |
-| key_size       | Default private key size used when resource property is not. Must be one out of: 2048, 3072, 4096.                                                                       | 2048                                     |
+| Attribute      | Description                                                                                                                                                                    | Default                                          |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------       | --------------------------------------:          |
+| contact        | Contact information, default empty. Set to `mailto:your@email.com`                                                                                                             | []                                               |
+| directory      | ACME server endpoint, Set to `https://acme-staging-v02.api.letsencrypt.org/directory` if you want to use the Let's Encrypt staging environment and corresponding certificates. | `https://acme-v02.api.letsencrypt.org/directory` |
+| renew          | Days before the certificate expires at which the certificate will be renewed                                                                                                   | 30                                               |
+| source_ips     | IP addresses used by Let's Encrypt to verify the TLS certificates, it will change over time. This attribute is for firewall purposes. Allow these IPs for HTTP (tcp/80).       | ['66.133.109.36']                                |
+| private_key    | Private key content of registered account. Private keys identify the ACME client with the endpoint and are not transferable between staging and production endpoints.          | nil                                              |
+| key_size       | Default private key size used when resource property is not. Must be one out of: 2048, 3072, 4096.                                                                             | 2048                                             |
 
 
 Recipes
@@ -36,7 +36,6 @@ Use the `acme_certificate` resource to request a certificate with the http-01 ch
 ```ruby
 acme_certificate 'test.example.com' do
   crt               '/etc/ssl/test.example.com.crt'
-  chain             '/etc/ssl/test.example.com-chain.crt'
   key               '/etc/ssl/test.example.com.key'
   wwwroot           '/var/www'
 end
@@ -65,8 +64,6 @@ Providers
 | `crt`               | string  | nil      | File path to place the certificate                     |
 | `key`               | string  | nil      | File path to place the private key                     |
 | `key_size`          | integer | 2048     | Private key size. Must be one out of: 2048, 3072, 4096 |
-| `chain`             | string  | nil      | File path to place the certificate chain               |
-| `fullchain`         | string  | nil      | File path to place the certificate including the chain |
 | `owner`             | string  | root     | Owner of the created files                             |
 | `group`             | string  | root     | Group of the created files                             |
 | `wwwroot`           | string  | /var/www | Path to the wwwroot of the domain                      |
@@ -119,7 +116,6 @@ end
 acme_certificate "#{site}" do
   crt               "/etc/httpd/ssl/#{site}.crt"
   key               "/etc/httpd/ssl/#{site}.key"
-  chain             "/etc/httpd/ssl/#{site}.pem"
   wwwroot           "/var/www/#{site}/htdocs/"
   notifies :restart, "service[apache2]"
   alt_names sans
@@ -128,7 +124,7 @@ end
 
 Testing
 -------
-The kitchen includes a `boulder` server to run the integration tests with, so testing can run locally without interaction with the online API's.
+The kitchen includes a `pebble` server to run the integration tests with, so testing can run locally without interaction with the online API's.
 
 Contributing
 ------------

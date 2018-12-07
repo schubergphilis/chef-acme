@@ -27,22 +27,14 @@ describe x509_certificate('/etc/ssl/test.example.com.crt') do
   it { should_not have_purpose 'SSL server CA' }
   its(:keylength) { should be 2048 }
   its(:validity_in_days) { should be > 30 }
-  its(:subject) { should match '/CN=test.example.com/' }
-  its(:issuer) { should eq '/CN=happy hacker fake CA' }
+  its(:subject) { should match '/CN=test.example.com' }
+  its(:issuer) { should match '/CN=Pebble Intermediate CA' }
 end
 
 describe x509_private_key('/etc/ssl/test.example.com.key') do
   it { should be_valid }
   it { should_not be_encrypted }
   it { should have_matching_certificate('/etc/ssl/test.example.com.crt') }
-end
-
-describe x509_certificate('/etc/ssl/test.example.com-chain.crt') do
-  it { should be_certificate }
-  it { should have_purpose 'SSL server' }
-  it { should have_purpose 'SSL server CA' }
-  its(:subject) { should eq '/CN=happy hacker fake CA' }
-  its(:issuer) { should eq '/CN=cackling cryptographer fake ROOT' }
 end
 
 describe command('echo | openssl s_client -connect 0:443 2>&1 | openssl x509 -noout -serial') do
@@ -61,8 +53,8 @@ describe x509_certificate('/etc/ssl/new.example.com.crt') do
   it { should_not have_purpose 'SSL server CA' }
   its(:keylength) { should be 2048 }
   its(:validity_in_days) { should be > 30 }
-  its(:subject) { should match '/CN=new.example.com/' }
-  its(:issuer) { should eq '/CN=happy hacker fake CA' }
+  its(:subject) { should match '/CN=new.example.com' }
+  its(:issuer) { should match '/CN=Pebble Intermediate CA' }
 end
 
 describe x509_private_key('/etc/ssl/new.example.com.key') do
@@ -77,8 +69,8 @@ describe x509_certificate('/etc/ssl/4096.example.com.crt') do
   it { should_not have_purpose 'SSL server CA' }
   its(:keylength) { should be 4096 }
   its(:validity_in_days) { should be > 30 }
-  its(:subject) { should match '/CN=4096.example.com/' }
-  its(:issuer) { should eq '/CN=happy hacker fake CA' }
+  its(:subject) { should match '/CN=4096.example.com' }
+  its(:issuer) { should match '/CN=Pebble Intermediate CA' }
 end
 
 describe command('openssl x509 -in /etc/ssl/web.example.com.crt -noout -text') do
