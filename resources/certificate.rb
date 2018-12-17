@@ -95,6 +95,11 @@ action :create do
 
       acme_validate(authz)
 
+      file tokenpath do
+        backup false
+        action :delete
+      end
+
       all_validations.push(authz)
     end
 
