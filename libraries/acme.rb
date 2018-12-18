@@ -29,7 +29,7 @@ def acme_client
 
   private_key = OpenSSL::PKey::RSA.new(node['acme']['private_key'].nil? ? 2048 : node['acme']['private_key'])
 
-  directory = new_resource.directory.nil? ? node['acme']['directory'] : new_resource.directory
+  directory = new_resource.dir.nil? ? node['acme']['dir'] : new_resource.dir
 
   contact = new_resource.contact.nil? ? node['acme']['contact'] : new_resource.contact
 
