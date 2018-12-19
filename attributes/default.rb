@@ -19,7 +19,7 @@
 #
 
 default['acme']['contact']     = []
-default['acme']['directory']   = 'https://acme-v02.api.letsencrypt.org/directory'
+default['acme']['dir']         = 'https://acme-v02.api.letsencrypt.org/directory'
 default['acme']['renew']       = 30
 default['acme']['source_ips']  = %w(66.133.109.36 64.78.149.164)
 

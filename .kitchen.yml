@@ -44,6 +44,6 @@ suites:
     - recipe[acme_client::http]
   attributes:
     acme:
-      directory: https://127.0.0.1:14000/dir
+      dir: https://127.0.0.1:14000/dir
       contact:
       - mailto:admin@example.com
