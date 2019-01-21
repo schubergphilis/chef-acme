@@ -84,14 +84,16 @@ action :create do
         group     new_resource.group
         mode      00755
         recursive true
-      end
+        action    :nothing
+      end.run_action(:create)
 
       file tokenpath do
         owner   new_resource.owner
         group   new_resource.group
         mode    00644
         content authz.file_content
-      end
+        action  :nothing
+      end.run_action(:create)
 
       acme_validate(authz)
 
