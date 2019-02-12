@@ -31,7 +31,7 @@ Installs the required acme-client rubygem.
 
 Usage
 -----
-Use the `acme_certificate` resource to request a certificate with the http-01 challange. The webserver for the domain for which you are requesting a certificate must be running on the local server. This resource only supports the http validation method. To use the tls-sni-01 challange, please see the resource below. Provide the path to your `wwwroot` for the specified domain.
+Use the `acme_certificate` resource to request a certificate with the http-01 challenge. The webserver for the domain for which you are requesting a certificate must be running on the local server. This resource only supports the http validation method. To use the tls-sni-01 challenge, please see the resource below. Provide the path to your `wwwroot` for the specified domain.
 
 ```ruby
 acme_certificate 'test.example.com' do
@@ -41,7 +41,7 @@ acme_certificate 'test.example.com' do
 end
 ```
 
-In case your webserver needs an already existing certificate when installing a new server you will have a bootstrap problem. Webserver cannot start without certificate, but the certificate cannot be requested without the running webserver. To overcome this a self-signed certificate can be generated with the `acme_selfsigned` resource.
+If your webserver needs an existing certificate already when installing a new server, you will have a bootstrap problem: The web server cannot start without a certificate, but the certificate cannot be requested without the running web server. To overcome this, a temporary self-signed certificate can be generated with the `acme_selfsigned` resource, allowing the web server to start.
 
 ```ruby
 acme_selfsigned 'test.example.com' do
@@ -110,7 +110,7 @@ acme_selfsigned "#{site}" do
   notifies :restart, "service[apache2]", :immediate
 end
 
-# Set up your webserver here...
+# Set up your web server here...
 
 # Get and auto-renew the certificate from Let's Encrypt
 acme_certificate "#{site}" do
@@ -124,7 +124,7 @@ end
 
 Testing
 -------
-The kitchen includes a `pebble` server to run the integration tests with, so testing can run locally without interaction with the online API's.
+The kitchen includes a `pebble` server to run the integration tests with, so testing can run locally without interaction with the online APIs.
 
 Contributing
 ------------
