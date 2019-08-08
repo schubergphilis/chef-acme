@@ -3,6 +3,19 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+4.1.0
+-----
+- hrak - Ease version constraints on supported platforms
+- zakame - Rename `endpoint` attribute to `dir`
+- zakame - Remove `chain` and `fullchain` properties
+- zakame - Switch to `pebble` for integration testing
+- zakame - Implement ACME v2 support
+- Dawnflash - Clean up token files after use
+- bby-bishopclark - Various trivial English fixes in README
+- rmoriz - bump acme-client gem to 2.0.3
+- SeanSith - Marked fullchain as a deprecated_property_alias
+- zakame - Fixes for the Travis and kitchen tests
+
 4.0.0
 -----
 The TLS-SNI-01 validation method has been removed as it is no longer supported by Let's Encrypt.
