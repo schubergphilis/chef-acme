@@ -18,13 +18,15 @@
 # limitations under the License.
 #
 
+apt_update 'update' if platform_family?('debian')
+
 include_recipe 'golang::default'
 
 bash 'install pebble' do
   code <<-EOC
   source /etc/profile.d/golang.sh
   go get -u #{node['pebble']['package']}/...
-  cd $GOPATH/src/#{node['pebble']['package']} && go install ./...
+  cd $GOPATH/src/#{node['pebble']['package']} && git checkout v1.0.1 && go install ./...
   EOC
   creates "#{node['go']['gopath']}/src/#{node['pebble']['package']}"
 end
