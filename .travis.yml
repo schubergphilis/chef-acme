@@ -15,6 +15,7 @@ cache:
 env:
   global:
     - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
+    - CHEF_LICENSE="accept-no-persist"
   matrix:
     - CMD="chef exec cookstyle --display-cop-names --extra-details"
     - CMD="chef exec foodcritic ."
