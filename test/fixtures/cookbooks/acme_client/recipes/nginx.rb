@@ -25,6 +25,11 @@ yum_package 'openssl' do
   only_if { platform_family?('rhel') }
 end
 
+if platform_family?('debian')
+  apt_update
+  apt_package 'apt-transport-https'
+end
+
 # Install a webserver
 include_recipe 'nginx'
 
