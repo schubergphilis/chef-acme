@@ -31,7 +31,7 @@ property :chain,      [String, nil], default: nil
 property :owner,      String, default: 'root'
 property :group,      String, default: 'root'
 
-property :key_size,   Integer, default: node['acme']['key_size'], required: true, equal_to: [2048, 3072, 4096]
+property :key_size,   Integer, default: lazy { node['acme']['key_size'] }, required: true, equal_to: [2048, 3072, 4096]
 
 action :create do
   file "#{new_resource.cn} SSL selfsigned key" do
