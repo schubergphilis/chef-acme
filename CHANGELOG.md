@@ -3,6 +3,10 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+4.1.1
+-----
+- petracvv - lazy evaluation in resource attributes
+
 4.1.0
 -----
 - hrak - Ease version constraints on supported platforms
