@@ -3,6 +3,10 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+4.1.2
+-----
+- zedtux - upgrade acme-client version to 2.0.6
+
 4.1.1
 -----
 - petracvv - lazy evaluation in resource attributes
