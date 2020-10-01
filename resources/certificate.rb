@@ -108,7 +108,13 @@ action :create do
     ruby_block "create certificate for #{new_resource.cn}" do # ~FC014
       block do
         unless (all_validations.map { |authz| authz.status == 'valid' }).all?
-          fail "[#{new_resource.cn}] Validation failed, unable to request certificate"
+          errors = all_validations.select do |authz|
+            authz.satus != 'valid'
+          end.map do |authz|
+            "{url: #{authz.url}, status: #{authz.status}, error: #{authz.error}} "
+          end.reduce(:+)
+
+          fail "[#{new_resource.cn}] Validation failed, unable to request certificate, Errors: [#{errors}]"
         end
 
         begin
