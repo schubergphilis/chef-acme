@@ -109,7 +109,7 @@ action :create do
       block do
         unless (all_validations.map { |authz| authz.status == 'valid' }).all?
           errors = all_validations.select do |authz|
-            authz.satus != 'valid'
+            authz.status != 'valid'
           end.map do |authz|
             "{url: #{authz.url}, status: #{authz.status}, error: #{authz.error}} "
           end.reduce(:+)
