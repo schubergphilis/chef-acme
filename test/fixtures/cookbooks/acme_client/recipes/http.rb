@@ -33,34 +33,34 @@ acme_certificate 'test.example.com' do
   alt_names         ['web.example.com', 'mail.example.com']
   crt               '/etc/ssl/test.example.com.crt'
   key               '/etc/ssl/test.example.com.key'
-  wwwroot           node['nginx']['default_root']
-  notifies          :reload, 'service[nginx]'
+  wwwroot           '/var/www/html'
+  notifies          :reload, 'nginx_service[nginx]', :immediately
 end
 
 acme_certificate 'new.example.com' do
   crt               '/etc/ssl/new.example.com.crt'
   key               '/etc/ssl/new.example.com.key'
-  wwwroot           node['nginx']['default_root']
+  wwwroot           '/var/www/html'
 end
 
 acme_certificate '4096.example.com' do
   crt               '/etc/ssl/4096.example.com.crt'
   key               '/etc/ssl/4096.example.com.key'
   key_size          4096
-  wwwroot           node['nginx']['default_root']
+  wwwroot           '/var/www/html'
 end
 
 acme_certificate 'web.example.com' do
   crt               '/etc/ssl/web.example.com.crt'
   key               '/etc/ssl/web.example.com.key'
-  wwwroot           node['nginx']['default_root']
-  notifies          :reload, 'service[nginx]'
+  wwwroot           '/var/www/html'
+  notifies          :reload, 'nginx_service[nginx]', :immediately
 end
 
 acme_certificate 'web.example.com' do
   alt_names         ['mail.example.com']
   crt               '/etc/ssl/web.example.com.crt'
   key               '/etc/ssl/web.example.com.key'
-  wwwroot           node['nginx']['default_root']
-  notifies          :reload, 'service[nginx]'
+  wwwroot           '/var/www/html'
+  notifies          :reload, 'nginx_service[nginx]', :immediately
 end

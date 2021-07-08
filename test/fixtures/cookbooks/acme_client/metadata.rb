@@ -7,4 +7,4 @@ long_description 'Configures the Acme cookbook'
 version          '0.1.0'
 
 depends          'acme'
-depends          'nginx', '~> 8.1'
+depends          'nginx'

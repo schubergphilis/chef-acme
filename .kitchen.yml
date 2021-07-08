@@ -10,6 +10,7 @@ verifier:
 
 provisioner:
   name: chef_zero
+  require_chef_omnibus: 16.13.16
   always_update_cookbooks: true
 
 platforms:
@@ -18,21 +19,10 @@ platforms:
       box: centos/7 # virtualbox, vmware, parallels
       image: centos-7-0-x64 # digitalocean
 
-  - name: ubuntu-14.04
-    run_list:
-      - recipe[apt]
+  - name: ubuntu-20.04
     driver:
-      box: bento/ubuntu-14.04
-      image: ubuntu-14-04-x64
-    attributes:
-      nginx:
-        install_method: source
-  - name: ubuntu-16.04
-    run_list:
-      - recipe[apt]
-    driver:
-      box: bento/ubuntu-16.04
-      image: ubuntu-16-04-x64
+      box: bento/ubuntu-20.04
+      image: ubuntu-20-04-x64
     attributes:
       nginx:
         install_method: source

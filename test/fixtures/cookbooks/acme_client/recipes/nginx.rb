@@ -18,10 +18,7 @@
 # limitations under the License.
 #
 
-# Work around an NGINX issue on CentOS
-# https://github.com/chef-cookbooks/nginx/issues/441
-yum_package 'openssl' do
-  action :upgrade
+yum_package 'epel-release' do
   only_if { platform_family?('rhel') }
 end
 
@@ -31,20 +28,17 @@ if platform_family?('debian')
 end
 
 # Install a webserver
-include_recipe 'nginx'
+nginx_install 'nginx'
+
+nginx_config 'nginx'
+
+nginx_service 'nginx' do
+  action :start
+end
 
 nginx_site 'test' do
+  cookbook cookbook_name
   template 'nginx-test.conf'
 
-  notifies :reload, 'service[nginx]', :immediately
-end
-
-directory node['nginx']['default_root'] do
-  owner 'root'
-  group 'root'
-  recursive true
-end
-
-cookbook_file "#{node['nginx']['default_root']}/index.html" do
-  source 'index.html'
+  notifies :reload, 'nginx_service[nginx]', :immediately
 end
