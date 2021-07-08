@@ -122,6 +122,59 @@ acme_certificate "#{site}" do
 end
 ```
 
+DNS verification
+----------------
+
+Letsencrypt supports DNS validation. Depending on the setup there may be different ways to deploy an acme challenge to your infrastructure. If you want to use DSN validation, you have to provide two block arguments to the `acme_certificate` resource.
+
+Implement 2 methods in a library in your cookbook, each returning a `Proc` object. The following example uses a HTTP API to provide challenges to the DNS infrastructure.
+
+```ruby
+# my_cookbook/libraries/acme_dns.rb
+
+class Chef
+  class Recipe
+    def install_dns_challenge(apitoken)
+      Proc.new do |authorization, new_resource|
+        # use DNS authorization
+        authz = authorization.dns
+        fqdn = authorization.identifier['value']
+        r = Net::HTTP.post(URI("https://my_awesome_dns_api/#{fqdn}"), authz.record_content, {'Authorization' => "Token #{apitoken}"})
+        if r.code != '200'
+          fail "DNS API does not want to install Challenge for #{fqdn}"
+        else
+          # do some validation that the challenge has propagated to the infrastructure
+        end
+        # it is important that the authz and fqdn is passed back, so it can be passed to the remove_dns_challenge method
+        [authz, fqdn]
+      end
+    end
+    def remove_dns_challenge(apitoken)
+      Proc.new do |authz, fqdn|
+        uri = URI("https://my_awesome_dns_api/#{fqdn}")
+        Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme=='https') do |http|
+          http.delete(uri, {'Authorization' => "Token #{apitoken}"})
+        end
+      end
+    end
+  end
+end
+```
+
+Use it in your recipe the following way:
+
+```ruby
+apitoken = chef_vault_item(vault, item)['dns_api_token']
+acme_certificate node['fqdn'] do
+  key '/path/to/key'
+  crt '/path/to/crt'
+  install_authz_block install_dns_challenge(apitoken)
+  remove_authz_block remove_dns_challenge(apitoken)
+end
+```
+
+
+
 Testing
 -------
 The kitchen includes a `pebble` server to run the integration tests with, so testing can run locally without interaction with the online APIs.

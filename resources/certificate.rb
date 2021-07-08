@@ -36,6 +36,18 @@ property :key_size,   Integer, default: lazy { node['acme']['key_size'] }, requi
 property :dir,        [String, nil], default: nil
 property :contact,    Array, default: []
 
+# if you want to use DNS authentication, you can pass the code to install and 
+# remove the challenge as a block
+#
+# the install_authz_block will be called for each authorization with the 
+# authorization and resource as parameter. It must return the authz object from 
+# the authorization.
+# The resource will then call the acme verification process. After verification 
+# the remove_authz_block will be called with the authz as parameter. This is 
+# intended to allow cleanup of the challenge
+property :install_authz_block, [Proc, nil]
+property :remove_authz_block, [Proc, nil]
+
 property :chain, String, deprecated: 'The chain property has been deprecated as the acme-client gem now returns the full certificate chain by default (on the crt property.) Please update your cookbooks to remove this property.'
 deprecated_property_alias 'fullchain', 'crt', 'The fullchain property has been deprecated as the acme-client gem now returns the full certificate chain by default (on the crt property.) Please update your cookbooks to switch to \'crt\'.'
 
@@ -72,37 +84,25 @@ action :create do
   end
 
   if mycert.nil? || mycert.not_after <= renew_at || names_changed?(mycert, names)
-    all_validations = []
     order = acme_order_certs_for(names)
-    order.authorizations.each do |authorization|
-      authz = authorization.http
-
-      tokenpath = "#{new_resource.wwwroot}/#{authz.filename}"
-
-      directory ::File.dirname(tokenpath) do
-        owner     new_resource.owner
-        group     new_resource.group
-        mode      00755
-        recursive true
-        action    :nothing
-      end.run_action(:create)
-
-      file tokenpath do
-        owner   new_resource.owner
-        group   new_resource.group
-        mode    00644
-        content authz.file_content
-        action  :nothing
-      end.run_action(:create)
-
-      acme_validate(authz)
-
-      file tokenpath do
-        backup false
-        action :delete
+    all_validations = []
+    if new_resource.install_authz_block.nil?
+      order.authorizations.each do |authorization|
+        authz = install_http_validation(authorization, new_resource)
+        acme_validate(authz)
+        remove_http_validation(authz, new_resource)
+        all_validations.push(authz)
       end
-
-      all_validations.push(authz)
+    else
+      ruby_block "install and validate challenges using custom method" do
+        block do
+          order.authorizations.each do |authorization|
+            authz, fqdn = new_resource.install_authz_block.call(authorization, new_resource)
+            acme_validate(authz)
+            new_resource.remove_authz_block.call(authz, fqdn)
+          end
+        end
+      end
     end
 
     ruby_block "create certificate for #{new_resource.cn}" do # ~FC014
@@ -131,6 +131,39 @@ action :create do
           end.run_action :create
         end
       end
+    end
+  end
+end
+
+action_class.class_eval do
+
+  def install_http_validation(authorization, new_resource)
+    authz = authorization.http
+    tokenpath = "#{new_resource.wwwroot}/#{authz.filename}"
+
+    directory ::File.dirname(tokenpath) do
+      owner     new_resource.owner
+      group     new_resource.group
+      mode      00755
+      recursive true
+      action    :nothing
+    end.run_action(:create)
+
+    file tokenpath do
+      owner   new_resource.owner
+      group   new_resource.group
+      mode    00644
+      content authz.file_content
+      action  :nothing
+    end.run_action(:create)
+    authz
+  end
+
+  def remove_http_validation(authz, new_resource)
+    tokenpath = "#{new_resource.wwwroot}/#{authz.filename}"
+    file tokenpath do
+      backup false
+      action :delete
     end
   end
 end
