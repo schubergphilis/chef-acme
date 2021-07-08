@@ -3,6 +3,13 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+4.1.3
+-----
+- essjayhch - Improve authz failure logging
+- redream - Typo fix
+- schrd - Add DNS validation support
+
+
 4.1.2
 -----
 - zedtux - upgrade acme-client version to 2.0.6
