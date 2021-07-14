@@ -6,7 +6,7 @@ description      'ACME client cookbook for free and trusted SSL/TLS certificates
 source_url       'https://github.com/schubergphilis/chef-acme'
 issues_url       'https://github.com/schubergphilis/chef-acme/issues'
 version          '4.1.3'
-chef_version     '>= 13.9'
+chef_version     '>= 15.3'
 
 %w(ubuntu debian redhat centos fedora).each do |os|
   supports os

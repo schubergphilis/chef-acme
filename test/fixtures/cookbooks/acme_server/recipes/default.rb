@@ -41,18 +41,21 @@ bash 'update Chef trusted certificates store' do
   creates '/opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED'
 end
 
-poise_service_user 'pebble'
+systemd_unit 'pebble.service' do
+  content <<~EOU
+    [Unit]
+    Description=Pebble ACME Server
 
-# let pebble always validate and never reject requests
-poise_service 'pebble' do
-  command "#{node['go']['gobin']}/pebble -config ./test/config/pebble-config.json"
-  user 'pebble'
-  directory "#{node['go']['gopath']}/src/github.com/letsencrypt/pebble"
-  environment(
-    'GOPATH' => node['go']['gopath'],
-    'GOBIN' => node['go']['gobin'],
-    'PEBBLE_VA_ALWAYS_VALID' => 1,
-    'PEBBLE_VA_NOSLEEP' => 1,
-    'PEBBLE_WFE_NONCEREJECT' => 0
-  )
+    [Service]
+    User=pebble
+    WorkingDirectory=#{node['go']['gopath']}/src/github.com/letsencrypt/pebble
+    ExecStart=#{node['go']['gobin']}/pebble -config ./test/config/pebble-config.json
+    Environment="GOPATH=#{node['go']['gopath']}" "GOBIN=#{node['go']['gobin']}"
+    # let pebble always validate and never reject requests
+    Environment=PEBBLE_VA_ALWAYS_VALID=1 PEBBLE_VA_NOSLEEP=1 PEBBLE_WFE_NONCEREJECT=1
+
+    [Install]
+    WantedBy=multi-user.target
+  EOU
+  action :create
 end
