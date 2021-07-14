@@ -2,7 +2,7 @@
 # Author:: Thijs Houtenbos <thoutenbos@schubergphilis.com>
 # Cookbook:: acme
 #
-# Copyright 2015-2018 Schuberg Philis
+# Copyright:: 2015-2021, Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

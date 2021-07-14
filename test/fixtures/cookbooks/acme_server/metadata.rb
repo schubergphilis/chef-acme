@@ -3,7 +3,6 @@ maintainer       'Thijs Houtenbos'
 maintainer_email 'thoutenbos@schubergphilis.com'
 license          'Apache-2.0'
 description      'Installs/Configures the Boulder Acme server'
-long_description 'Installs/Configures the Boulder Acme server'
 version          '0.1.0'
 
 depends          'golang', '= 1.7.0'

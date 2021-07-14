@@ -3,7 +3,7 @@
 # Cookbook:: acme
 # Library:: matchers
 #
-# Copyright 2015-2018 Schuberg Philis
+# Copyright:: 2015-2021, Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,16 +17,3 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-if defined?(ChefSpec)
-  ChefSpec.define_matcher(:acme_certificate)
-  ChefSpec.define_matcher(:acme_selfsigned)
-
-  def create_acme_selfsigned(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:acme_selfsigned, :create, resource_name)
-  end
-
-  def create_acme_certificate(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:acme_certificate, :create, resource_name)
-  end
-end

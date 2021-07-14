@@ -1,34 +1,6 @@
 AllCops:
-  Include:
-    - Berksfile
-    - '**/Gemfile'
-    - Rakefile
-    - Thorfile
-    - Guardfile
-  Exclude:
-    - vendor/**
-
-ClassLength:
-  Enabled: false
-Documentation:
-  Enabled: false
-Encoding:
-  Enabled: false
-HashSyntax:
-  Enabled: false
-LineLength:
-  Enabled: false
-MethodLength:
-  Enabled: false
-SignalException:
-  Enabled: false
-TrailingCommaInArrayLiteral:
-  Enabled: false
-WordArray:
-  Enabled: false
-ClassAndModuleChildren:
-  Enabled: false
-AbcSize:
-  Enabled: false
-SpaceBeforeFirstArg:
-  Enabled: false
+  TargetChefVersion: 17.latest
+Chef/Modernize/FoodcriticComments:
+  Enabled: true
+Chef/Style/CopyrightCommentFormat:
+  Enabled: true

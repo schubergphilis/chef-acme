@@ -3,7 +3,7 @@
 # Cookbook:: acme
 # Resource:: ssl_key
 #
-# Copyright 2015-2018 Schuberg Philis
+# Copyright:: 2015-2021, Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +18,14 @@
 # limitations under the License.
 #
 
+unified_mode true
+
 default_action :create_if_missing
 
-property :path,          String, :name_attribute => true
-property :length,        Integer,                                  :default => 2048
-property :output_format, Symbol, :equal_to => [:pem, :der, :text], :default => :pem
-property :type,          Symbol, :equal_to => [:rsa, :dsa],        :default => :rsa
+property :path,          String, name_property: true
+property :length,        Integer, default: 2048
+property :output_format, Symbol, equal_to: [:pem, :der, :text], default: :pem
+property :type,          Symbol, equal_to: [:rsa, :dsa],        default: :rsa
 
 def load
   klass = OpenSSL::PKey.const_get(type.upcase)
@@ -38,7 +40,7 @@ def do_action(file_action)
   file new_resource.path do
     owner     owner
     group     group
-    mode      00400
+    mode      '400'
     content   data
     sensitive true
 
