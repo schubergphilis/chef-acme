@@ -5,13 +5,13 @@ driver:
     memory: 1024
 
 verifier:
-  root_path: '/tmp/verifier'
-  sudo: true
+  name: inspec
 
 provisioner:
   name: chef_zero
-  require_chef_omnibus: 16.13.16
-  always_update_cookbooks: true
+  product_name: chef
+  chef_license: accept-no-persist
+  deprecations_as_errors: true
 
 platforms:
   - name: centos-7
@@ -36,4 +36,4 @@ suites:
     acme:
       dir: https://127.0.0.1:14000/dir
       contact:
-      - mailto:admin@example.com
+        - mailto:admin@example.com

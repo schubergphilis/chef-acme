@@ -31,7 +31,7 @@ def acme_client
 
   directory = new_resource.dir.nil? ? node['acme']['dir'] : new_resource.dir
 
-  contact = new_resource.contact.nil? ? node['acme']['contact'] : new_resource.contact
+  contact = (new_resource.contact.nil? || new_resource.contact.empty?) ? node['acme']['contact'] : new_resource.contact
 
   @client = Acme::Client.new(private_key: private_key, directory: directory)
 

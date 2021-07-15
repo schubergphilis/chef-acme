@@ -33,7 +33,7 @@ property :group,      String, default: 'root'
 
 property :wwwroot,    String, default: '/var/www'
 
-property :key_size,   Integer, required: true, equal_to: [2048, 3072, 4096]
+property :key_size,   Integer, default: lazy { node['acme']['key_size'] }, equal_to: [2048, 3072, 4096]
 
 property :dir,        [String, nil]
 property :contact,    Array, default: []

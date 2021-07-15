@@ -18,17 +18,10 @@
 # limitations under the License.
 #
 
-yum_package 'epel-release' do
-  only_if { platform_family?('rhel') }
-end
-
-if platform_family?('debian')
-  apt_update
-  apt_package 'apt-transport-https'
-end
-
 # Install a webserver
-nginx_install 'nginx'
+nginx_install 'nginx' do
+  source 'repo'
+end
 
 nginx_config 'nginx'
 
