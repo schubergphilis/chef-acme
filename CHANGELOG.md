@@ -11,6 +11,7 @@ Unreleased
   - Update test infra to use InSpec instead of legacy ServerSpec
   - Update test cookbook to use latest cookbooks / resources
   - Use standard location for Kitchen files according to [upstream](https://kitchen.ci/docs/getting-started/kitchen-yml/)
+  - Update `acme_client` gem to Ruby 3-compliant version
 
 4.1.3
 -----
