@@ -15,17 +15,12 @@ provisioner:
 
 platforms:
   - name: centos-7
-    driver:
-      box: centos/7 # virtualbox, vmware, parallels
-      image: centos-7-0-x64 # digitalocean
-
+  - name: centos-8
+  - name: centos-stream-8
+  - name: debian-9
+  - name: debian-10
+  - name: ubuntu-18.04
   - name: ubuntu-20.04
-    driver:
-      box: bento/ubuntu-20.04
-      image: ubuntu-20-04-x64
-    attributes:
-      nginx:
-        install_method: source
 
 suites:
 - name: http

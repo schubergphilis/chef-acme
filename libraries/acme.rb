@@ -27,9 +27,12 @@ end
 def acme_client
   return @client if @client
 
-  private_key = OpenSSL::PKey::RSA.new(node['acme']['private_key'].nil? ? 2048 : node['acme']['private_key'])
+  # load private_key from disk if present
+  node.default['acme']['private_key'] = ::File.read('/etc/acme/account_private_key.pem') if ::File.exist?('/etc/acme/account_private_key.pem')
 
-  directory = new_resource.dir.nil? ? node['acme']['dir'] : new_resource.dir
+  private_key = OpenSSL::PKey::RSA.new(node['acme']['private_key'] || 2048)
+
+  directory = new_resource.dir || node['acme']['dir']
 
   contact = (new_resource.contact.nil? || new_resource.contact.empty?) ? node['acme']['contact'] : new_resource.contact
 
@@ -38,6 +41,14 @@ def acme_client
   if node['acme']['private_key'].nil?
     acme_client.new_account(contact: contact, terms_of_service_agreed: true)
     node.default['acme']['private_key'] = private_key.to_pem
+
+    # write key to disk for persistence
+    directory '/etc/acme'
+    file '/etc/acme/account_private_key.pem' do
+      content private_key.to_pem
+      mode '600'
+      sensitive true
+    end
   end
 
   @client
