@@ -3,7 +3,7 @@
 # Cookbook:: acme
 # Resource:: certificate
 #
-# Copyright 2015-2018 Schuberg Philis
+# Copyright:: 2015-2021, Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+unified_mode true
+
 default_action :create
 
 property :cn,         String, name_property: true
@@ -31,19 +33,19 @@ property :group,      String, default: 'root'
 
 property :wwwroot,    String, default: '/var/www'
 
-property :key_size,   Integer, default: lazy { node['acme']['key_size'] }, required: true, equal_to: [2048, 3072, 4096]
+property :key_size,   Integer, default: lazy { node['acme']['key_size'] }, equal_to: [2048, 3072, 4096]
 
-property :dir,        [String, nil], default: nil
+property :dir,        [String, nil]
 property :contact,    Array, default: []
 
-# if you want to use DNS authentication, you can pass the code to install and 
+# if you want to use DNS authentication, you can pass the code to install and
 # remove the challenge as a block
 #
-# the install_authz_block will be called for each authorization with the 
-# authorization and resource as parameter. It must return the authz object from 
+# the install_authz_block will be called for each authorization with the
+# authorization and resource as parameter. It must return the authz object from
 # the authorization.
-# The resource will then call the acme verification process. After verification 
-# the remove_authz_block will be called with the authz as parameter. This is 
+# The resource will then call the acme verification process. After verification
+# the remove_authz_block will be called with the authz as parameter. This is
 # intended to allow cleanup of the challenge
 property :install_authz_block, [Proc, nil]
 property :remove_authz_block, [Proc, nil]
@@ -68,7 +70,7 @@ action :create do
     path      new_resource.key
     owner     new_resource.owner
     group     new_resource.group
-    mode      00400
+    mode      '400'
     content   OpenSSL::PKey::RSA.new(new_resource.key_size).to_pem
     sensitive true
     action    :nothing
@@ -94,7 +96,7 @@ action :create do
         all_validations.push(authz)
       end
     else
-      ruby_block "install and validate challenges using custom method" do
+      ruby_block 'install and validate challenges using custom method' do
         block do
           order.authorizations.each do |authorization|
             authz, fqdn = new_resource.install_authz_block.call(authorization, new_resource)
@@ -105,22 +107,20 @@ action :create do
       end
     end
 
-    ruby_block "create certificate for #{new_resource.cn}" do # ~FC014
+    ruby_block "create certificate for #{new_resource.cn}" do
       block do
         unless (all_validations.map { |authz| authz.status == 'valid' }).all?
-          errors = all_validations.select do |authz|
-            authz.status != 'valid'
-          end.map do |authz|
+          errors = all_validations.select { |authz| authz.status != 'valid' }.map do |authz|
             "{url: #{authz.url}, status: #{authz.status}, error: #{authz.error}} "
           end.reduce(:+)
 
-          fail "[#{new_resource.cn}] Validation failed, unable to request certificate, Errors: [#{errors}]"
+          raise "[#{new_resource.cn}] Validation failed, unable to request certificate, Errors: [#{errors}]"
         end
 
         begin
           newcert = acme_cert(order, new_resource.cn, mykey, new_resource.alt_names)
         rescue Acme::Client::Error => e
-          fail "[#{new_resource.cn}] Certificate request failed: #{e.message}"
+          raise "[#{new_resource.cn}] Certificate request failed: #{e.message}"
         else
           Chef::Resource::File.new("#{new_resource.cn} SSL new crt", run_context).tap do |f|
             f.path    new_resource.crt
@@ -136,7 +136,6 @@ action :create do
 end
 
 action_class.class_eval do
-
   def install_http_validation(authorization, new_resource)
     authz = authorization.http
     tokenpath = "#{new_resource.wwwroot}/#{authz.filename}"
@@ -144,7 +143,7 @@ action_class.class_eval do
     directory ::File.dirname(tokenpath) do
       owner     new_resource.owner
       group     new_resource.group
-      mode      00755
+      mode      '755'
       recursive true
       action    :nothing
     end.run_action(:create)
@@ -152,7 +151,7 @@ action_class.class_eval do
     file tokenpath do
       owner   new_resource.owner
       group   new_resource.group
-      mode    00644
+      mode    '644'
       content authz.file_content
       action  :nothing
     end.run_action(:create)

@@ -3,7 +3,7 @@
 # Cookbook:: acme
 # Library:: acme
 #
-# Copyright 2015-2018 Schuberg Philis
+# Copyright:: 2015-2021, Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,17 +27,28 @@ end
 def acme_client
   return @client if @client
 
-  private_key = OpenSSL::PKey::RSA.new(node['acme']['private_key'].nil? ? 2048 : node['acme']['private_key'])
+  # load private_key from disk if present
+  node.default['acme']['private_key'] = ::File.read('/etc/acme/account_private_key.pem') if ::File.exist?('/etc/acme/account_private_key.pem')
 
-  directory = new_resource.dir.nil? ? node['acme']['dir'] : new_resource.dir
+  private_key = OpenSSL::PKey::RSA.new(node['acme']['private_key'] || 2048)
 
-  contact = new_resource.contact.nil? ? node['acme']['contact'] : new_resource.contact
+  directory = new_resource.dir || node['acme']['dir']
+
+  contact = (new_resource.contact.nil? || new_resource.contact.empty?) ? node['acme']['contact'] : new_resource.contact
 
   @client = Acme::Client.new(private_key: private_key, directory: directory)
 
   if node['acme']['private_key'].nil?
     acme_client.new_account(contact: contact, terms_of_service_agreed: true)
-    node.normal['acme']['private_key'] = private_key.to_pem
+    node.default['acme']['private_key'] = private_key.to_pem
+
+    # write key to disk for persistence
+    directory '/etc/acme'
+    file '/etc/acme/account_private_key.pem' do
+      content private_key.to_pem
+      mode '600'
+      sensitive true
+    end
   end
 
   @client
@@ -97,5 +108,5 @@ def self_signed_cert(cn, alts, key)
   cert.extensions += [ef.create_extension('subjectKeyIdentifier', 'hash')]
   cert.extensions += [ef.create_extension('subjectAltName', alts.map { |d| "DNS:#{d}" }.join(','))] unless alts.empty?
 
-  cert.sign key, OpenSSL::Digest::SHA256.new
+  cert.sign key, OpenSSL::Digest.new('SHA256')
 end

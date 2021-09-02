@@ -3,7 +3,7 @@
 # Cookbook:: acme_server
 # Recipe:: default
 #
-# Copyright 2015-2018 Schuberg Philis
+# Copyright:: 2015-2021, Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,37 +22,41 @@ apt_update 'update' if platform_family?('debian')
 
 include_recipe 'golang::default'
 
-bash 'install pebble' do
-  code <<-EOC
-  source /etc/profile.d/golang.sh
-  go get -u #{node['pebble']['package']}/...
-  cd $GOPATH/src/#{node['pebble']['package']} && git checkout v1.0.1 && go install ./...
-  EOC
-  creates "#{node['go']['gopath']}/src/#{node['pebble']['package']}"
+golang_package 'github.com/letsencrypt/pebble/...' do
+  action [:install, :build]
 end
 
 # Needed for the acme-client gem to continue connecting to pebble;
 # please do NOT do this on production Chef nodes!
-bash 'update Chef trusted certificates store' do
-  code <<-EOC
-  cat #{node['go']['gopath']}/src/#{node['pebble']['package']}/test/certs/pebble.minica.pem >> /opt/chef/embedded/ssl/certs/cacert.pem
-  touch /opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED
-  EOC
+execute 'update Chef trusted certificates store' do
+  command "cat #{node['golang']['gopath']}/src/github.com/letsencrypt/pebble/test/certs/pebble.minica.pem >> /opt/chef/embedded/ssl/certs/cacert.pem && touch /opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED"
   creates '/opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED'
 end
 
-poise_service_user 'pebble'
+user 'pebble' do
+  system true
+  shell '/bin/false'
+end
 
-# let pebble always validate and never reject requests
-poise_service 'pebble' do
-  command "#{node['go']['gobin']}/pebble -config ./test/config/pebble-config.json"
-  user 'pebble'
-  directory "#{node['go']['gopath']}/src/github.com/letsencrypt/pebble"
-  environment(
-    'GOPATH' => node['go']['gopath'],
-    'GOBIN' => node['go']['gobin'],
-    'PEBBLE_VA_ALWAYS_VALID' => 1,
-    'PEBBLE_VA_NOSLEEP' => 1,
-    'PEBBLE_WFE_NONCEREJECT' => 0
-  )
+systemd_unit 'pebble.service' do
+  content <<~EOU
+    [Unit]
+    Description=Pebble ACME Server
+
+    [Service]
+    User=pebble
+    WorkingDirectory=#{node['golang']['gopath']}/src/github.com/letsencrypt/pebble
+    ExecStart=#{node['golang']['gobin']}/pebble -config ./test/config/pebble-config.json
+    Environment="GOPATH=#{node['golang']['gopath']}" "GOBIN=#{node['golang']['gobin']}"
+    # let pebble always validate and never reject requests
+    Environment=PEBBLE_VA_ALWAYS_VALID=1 PEBBLE_VA_NOSLEEP=1 PEBBLE_WFE_NONCEREJECT=0
+
+    [Install]
+    WantedBy=multi-user.target
+  EOU
+  action :create
+end
+
+service 'pebble' do
+  action [:enable, :start]
 end

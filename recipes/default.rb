@@ -3,7 +3,7 @@
 # Cookbook:: acme
 # Recipe:: default
 #
-# Copyright 2015-2018 Schuberg Philis
+# Copyright:: 2015-2021, Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 chef_gem 'acme-client' do
   action :install
   version node['acme']['gem_version']
-  compile_time true if respond_to?(:compile_time)
+  compile_time true
 end
 
 require 'acme-client'

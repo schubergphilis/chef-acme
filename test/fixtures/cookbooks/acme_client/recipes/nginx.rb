@@ -3,7 +3,7 @@
 # Cookbook:: acme_client
 # Recipe:: nginx
 #
-# Copyright 2015-2018 Schuberg Philis
+# Copyright:: 2015-2021, Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,17 +18,10 @@
 # limitations under the License.
 #
 
-yum_package 'epel-release' do
-  only_if { platform_family?('rhel') }
-end
-
-if platform_family?('debian')
-  apt_update
-  apt_package 'apt-transport-https'
-end
-
 # Install a webserver
-nginx_install 'nginx'
+nginx_install 'nginx' do
+  source 'repo'
+end
 
 nginx_config 'nginx'
 

@@ -1,0 +1,34 @@
+---
+driver:
+  name: vagrant
+  customize:
+    memory: 1024
+
+verifier:
+  name: inspec
+
+provisioner:
+  name: chef_zero
+  product_name: chef
+  chef_license: accept-no-persist
+  deprecations_as_errors: true
+
+platforms:
+  - name: centos-7
+  - name: centos-8
+  - name: centos-stream-8
+  - name: debian-9
+  - name: debian-10
+  - name: ubuntu-18.04
+  - name: ubuntu-20.04
+
+suites:
+- name: http
+  run_list:
+    - recipe[acme_server]
+    - recipe[acme_client::http]
+  attributes:
+    acme:
+      dir: https://127.0.0.1:14000/dir
+      contact:
+        - mailto:admin@example.com

@@ -3,12 +3,21 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+Unreleased
+----------
+- detjensrobert - Chef 17 Compatibility
+  - Enable `unified_mode` for all resources
+  - Cookstyle fixes
+  - Update test infra to use InSpec instead of legacy ServerSpec
+  - Update test cookbook to use latest cookbooks / resources
+  - Use standard location for Kitchen files according to [upstream](https://kitchen.ci/docs/getting-started/kitchen-yml/)
+  - Update `acme_client` gem to Ruby 3-compliant version
+
 4.1.3
 -----
 - essjayhch - Improve authz failure logging
 - redream - Typo fix
 - schrd - Add DNS validation support
-
 
 4.1.2
 -----
