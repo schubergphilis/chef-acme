@@ -3,7 +3,7 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
-Unreleased
+4.1.4
 ----------
 - detjensrobert - Chef 17 Compatibility
   - Enable `unified_mode` for all resources
