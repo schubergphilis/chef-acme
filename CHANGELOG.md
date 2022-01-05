@@ -3,9 +3,10 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
-Unreleased
+4.1.5
 ----------
 - twk3 - make private key file location configurable
+- thoutenbos - Upgrade acme-client gem to v2.0.9
 
 4.1.4
 ----------
