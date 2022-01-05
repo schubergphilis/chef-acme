@@ -3,6 +3,10 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+Unreleased
+----------
+- twk3 - make private key file location configurable
+
 4.1.4
 ----------
 - detjensrobert - Chef 17 Compatibility
