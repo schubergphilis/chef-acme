@@ -14,14 +14,15 @@ Starting with v4.0.0 of the acme cookbook the acme_ssl_certificate provider has 
 Attributes
 ----------
 
-| Attribute      | Description                                                                                                                                                                    | Default                                          |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------       | --------------------------------------:          |
-| contact        | Contact information, default empty. Set to `mailto:your@email.com`                                                                                                             | []                                               |
-| dir            | ACME server endpoint, Set to `https://acme-staging-v02.api.letsencrypt.org/directory` if you want to use the Let's Encrypt staging environment and corresponding certificates. | `https://acme-v02.api.letsencrypt.org/directory` |
-| renew          | Days before the certificate expires at which the certificate will be renewed                                                                                                   | 30                                               |
-| source_ips     | IP addresses used by Let's Encrypt to verify the TLS certificates, it will change over time. This attribute is for firewall purposes. Allow these IPs for HTTP (tcp/80).       | ['66.133.109.36']                                |
-| private_key    | Private key content of registered account. Private keys identify the ACME client with the endpoint and are not transferable between staging and production endpoints.          | nil                                              |
-| key_size       | Default private key size used when resource property is not. Must be one out of: 2048, 3072, 4096.                                                                             | 2048                                             |
+| Attribute        | Description                                                                                                                                                                    | Default                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------       | --------------------------------------:          |
+| contact          | Contact information, default empty. Set to `mailto:your@email.com`                                                                                                             | []                                               |
+| dir              | ACME server endpoint, Set to `https://acme-staging-v02.api.letsencrypt.org/directory` if you want to use the Let's Encrypt staging environment and corresponding certificates. | `https://acme-v02.api.letsencrypt.org/directory` |
+| renew            | Days before the certificate expires at which the certificate will be renewed                                                                                                   | 30                                               |
+| source_ips       | IP addresses used by Let's Encrypt to verify the TLS certificates, it will change over time. This attribute is for firewall purposes. Allow these IPs for HTTP (tcp/80).       | ['66.133.109.36']                                |
+| private_key      | Private key content of registered account. Private keys identify the ACME client with the endpoint and are not transferable between staging and production endpoints.          | nil                                              |
+| private_key_file | Filename where private key will be saved. If this file exists, the contents take precedence over the value set in `private_key`.                                               | `/etc/acme/account_private_key.pem`              |
+| key_size         | Default private key size used when resource property is not. Must be one out of: 2048, 3072, 4096.                                                                             | 2048                                             |
 
 
 Recipes
