@@ -58,32 +58,32 @@ A working example can be found in the included `acme_client` test cookbook.
 Providers
 ---------
 ### certificate
-| Property            | Type    | Default  | Description                                            |
-|  ---                |  ---    |  ---     |  ---                                                   |
-| `cn`                | string  | _name_   | The common name for the certificate                    |
-| `alt_names`         | array   | []       | The common name for the certificate                    |
-| `crt`               | string  | nil      | File path to place the certificate                     |
-| `key`               | string  | nil      | File path to place the private key                     |
-| `key_size`          | integer | 2048     | Private key size. Must be one out of: 2048, 3072, 4096 |
-| `owner`             | string  | root     | Owner of the created files                             |
-| `group`             | string  | root     | Group of the created files                             |
-| `wwwroot`           | string  | /var/www | Path to the wwwroot of the domain                      |
-| `ignore_failure`    | boolean | false    | Whether to continue chef run if issuance fails         |
-| `retries`           | integer | 0        | Number of times to catch exceptions and retry          |
-| `retry_delay`       | integer | 2        | Number of seconds to wait between retries              |
-| `endpoint`          | string  | nil      | The Let's Encrypt endpoint to use                      |
-| `contact`           | array   | []       | The contact to use                                     |
+| Property            | Type           | Default  | Description                                            |
+|  ---                |  ---           |  ---     |  ---                                                   |
+| `cn`                | string         | _name_   | The common name for the certificate                    |
+| `alt_names`         | array          | []       | The common name for the certificate                    |
+| `crt`               | string         | nil      | File path to place the certificate                     |
+| `key`               | string         | nil      | File path to place the private key                     |
+| `key_size`          | integer        | 2048     | Private key size. Must be one out of: 2048, 3072, 4096 |
+| `owner`             | string,integer | root     | Owner of the created files                             |
+| `group`             | string,integer | root     | Group of the created files                             |
+| `wwwroot`           | string         | /var/www | Path to the wwwroot of the domain                      |
+| `ignore_failure`    | boolean        | false    | Whether to continue chef run if issuance fails         |
+| `retries`           | integer        | 0        | Number of times to catch exceptions and retry          |
+| `retry_delay`       | integer        | 2        | Number of seconds to wait between retries              |
+| `endpoint`          | string         | nil      | The Let's Encrypt endpoint to use                      |
+| `contact`           | array          | []       | The contact to use                                     |
 
 ### selfsigned
-| Property         | Type    | Default  | Description                                            |
-|  ---             |  ---    |  ---     |  ---                                                   |
-| `cn`             | string  | _name_   | The common name for the certificate                    |
-| `crt`            | string  | nil      | File path to place the certificate                     |
-| `key`            | string  | nil      | File path to place the private key                     |
-| `key_size`       | integer | 2048     | Private key size. Must be one out of: 2048, 3072, 4096 |
-| `chain`          | string  | nil      | File path to place the certificate chain               |
-| `owner`          | string  | root     | Owner of the created files                             |
-| `group`          | string  | root     | Group of the created files                             |
+| Property         | Type           | Default  | Description                                            |
+|  ---             |  ---           |  ---     |  ---                                                   |
+| `cn`             | string         | _name_   | The common name for the certificate                    |
+| `crt`            | string         | nil      | File path to place the certificate                     |
+| `key`            | string         | nil      | File path to place the private key                     |
+| `key_size`       | integer        | 2048     | Private key size. Must be one out of: 2048, 3072, 4096 |
+| `chain`          | string         | nil      | File path to place the certificate chain               |
+| `owner`          | string,integer | root     | Owner of the created files                             |
+| `group`          | string,integer | root     | Group of the created files                             |
 
 Example
 -------

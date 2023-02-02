@@ -30,8 +30,8 @@ property :key,        [String, nil], required: true
 
 property :chain,      [String, nil]
 
-property :owner,      String, default: 'root'
-property :group,      String, default: 'root'
+property :owner,      [String, Integer], default: 'root'
+property :group,      [String, Integer], default: 'root'
 
 property :key_size,   Integer, default: lazy { node['acme']['key_size'] }, equal_to: [2048, 3072, 4096]
 
