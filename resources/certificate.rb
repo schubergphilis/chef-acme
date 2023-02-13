@@ -28,8 +28,8 @@ property :alt_names,  Array,  default: []
 property :crt,        [String, nil], required: true
 property :key,        [String, nil], required: true
 
-property :owner,      String, default: 'root'
-property :group,      String, default: 'root'
+property :owner,      [String, Integer], default: 'root'
+property :group,      [String, Integer], default: 'root'
 
 property :wwwroot,    String, default: '/var/www'
 

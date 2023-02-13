@@ -3,6 +3,10 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+4.1.6
+----------
+- ramereth - Allow `Integer` for `owner` and `group` properties
+
 4.1.5
 ----------
 - twk3 - make private key file location configurable
