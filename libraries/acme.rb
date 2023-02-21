@@ -68,7 +68,7 @@ def acme_validate(authz)
   times = 60
 
   while times > 0
-    break unless authz.status == 'pending'
+    break unless ( authz.status == 'pending' || authz.status == 'processing' )
     times -= 1
     sleep 1
     authz.reload
