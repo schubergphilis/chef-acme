@@ -6,6 +6,9 @@ This file is used to list changes made in each version of the acme cookbook.
 4.1.6
 ----------
 - ramereth - Allow `Integer` for `owner` and `group` properties
+- bugoff - Add processing as a valid authz status
+- thoutenbos - Update Test Kitchen
+- thoutenbos - Upgrade acme-client gem to v2.0.13
 
 4.1.5
 ----------
