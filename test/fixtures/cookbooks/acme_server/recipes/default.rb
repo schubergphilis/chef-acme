@@ -20,6 +20,7 @@
 
 apt_update 'update' if platform_family?('debian')
 
+node.default['golang']['version'] = '1.17.13'
 include_recipe 'golang::default'
 
 golang_package 'github.com/letsencrypt/pebble/...' do
@@ -29,7 +30,7 @@ end
 # Needed for the acme-client gem to continue connecting to pebble;
 # please do NOT do this on production Chef nodes!
 execute 'update Chef trusted certificates store' do
-  command "cat #{node['golang']['gopath']}/src/github.com/letsencrypt/pebble/test/certs/pebble.minica.pem >> /opt/chef/embedded/ssl/certs/cacert.pem && touch /opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED"
+  command "cat #{node['golang']['gopath']}/pkg/mod/github.com/letsencrypt/pebble@v1.0.1/test/certs/pebble.minica.pem >> /opt/chef/embedded/ssl/certs/cacert.pem && touch /opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED"
   creates '/opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED'
 end
 
@@ -45,7 +46,7 @@ systemd_unit 'pebble.service' do
 
     [Service]
     User=pebble
-    WorkingDirectory=#{node['golang']['gopath']}/src/github.com/letsencrypt/pebble
+    WorkingDirectory=#{node['golang']['gopath']}/pkg/mod/github.com/letsencrypt/pebble@v1.0.1
     ExecStart=#{node['golang']['gobin']}/pebble -config ./test/config/pebble-config.json
     Environment="GOPATH=#{node['golang']['gopath']}" "GOBIN=#{node['golang']['gobin']}"
     # let pebble always validate and never reject requests
