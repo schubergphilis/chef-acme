@@ -68,3 +68,8 @@ describe command('openssl x509 -in /etc/ssl/web.example.com.crt -noout -text') d
   its('stdout') { should match(/DNS:web.example.com/) }
   its('stdout') { should match(/DNS:mail.example.com/) }
 end
+
+describe command('openssl x509 -in /etc/ssl/ip.example.com.crt -noout -text') do
+  its('stdout') { should match(/DNS:ip.example.com/) }
+  its('stdout') { should match(/IP:192.168.18.17/) }
+end

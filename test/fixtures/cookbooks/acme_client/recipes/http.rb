@@ -57,3 +57,10 @@ acme_certificate 'web.example.com' do
   wwwroot           '/var/www/html'
   notifies          :reload, 'nginx_service[nginx]', :immediately
 end
+
+# Generate selfsigned certificate with both DNS and IP SANs for test
+acme_selfsigned 'ip.example.com' do
+  alt_names         ['ip.example.com', '192.168.18.17']
+  crt               '/etc/ssl/ip.example.com.crt'
+  key               '/etc/ssl/ip.example.com.key'
+end
