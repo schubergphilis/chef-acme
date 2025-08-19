@@ -93,6 +93,28 @@ def acme_cert(order, cn, key, alt_names = [])
   order.certificate
 end
 
+def create_subject_alt_names(alt_names)
+  return nil if alt_names.nil? || alt_names.empty?
+
+  alt_names.map do |name|
+    if valid_ip_address?(name)
+      "IP:#{name}"
+    else
+      "DNS:#{name}"
+    end
+  end.join(',')
+end
+
+def valid_ip_address?(address)
+  require 'ipaddr'
+  begin
+    ip = IPAddr.new(address)
+    ip.to_s == address || ip.to_s == address.downcase
+  rescue IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
+    false
+  end
+end
+
 def self_signed_cert(cn, alts, key)
   cert = OpenSSL::X509::Certificate.new
   cert.subject = cert.issuer = OpenSSL::X509::Name.new([['CN', cn, OpenSSL::ASN1::UTF8STRING]])
@@ -110,7 +132,8 @@ def self_signed_cert(cn, alts, key)
 
   cert.extensions += [ef.create_extension('basicConstraints', 'CA:FALSE', true)]
   cert.extensions += [ef.create_extension('subjectKeyIdentifier', 'hash')]
-  cert.extensions += [ef.create_extension('subjectAltName', alts.map { |d| "DNS:#{d}" }.join(','))] unless alts.empty?
+  san = create_subject_alt_names(alts)
+  cert.extensions += [ef.create_extension('subjectAltName', san)] if san
 
   cert.sign key, OpenSSL::Digest.new('SHA256')
 end
