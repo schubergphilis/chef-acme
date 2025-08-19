@@ -109,7 +109,7 @@ def valid_ip_address?(address)
   require 'ipaddr'
   begin
     ip = IPAddr.new(address)
-    ip.to_s == address || ip.to_s == address.downcase
+    true
   rescue IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
     false
   end
