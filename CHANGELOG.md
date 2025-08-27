@@ -3,9 +3,10 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
-Unreleased
+4.1.7
 ----------
 - seansith - Upgrade acme-client gem to v2.0.15
+- stanhu - Make SAN entries support IP addresses
 
 4.1.6
 ----------
