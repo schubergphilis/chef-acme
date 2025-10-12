@@ -34,6 +34,8 @@ property :group,      [String, Integer], default: 'root'
 property :wwwroot,    String, default: '/var/www'
 
 property :key_size,   Integer, default: lazy { node['acme']['key_size'] }, equal_to: [2048, 3072, 4096]
+property :key_type,   String, default: 'rsa', equal_to: %w(rsa ec)
+property :ec_curve,   String, default: 'prime256v1', equal_to: %w(prime256v1 secp384r1 secp521r1)
 
 property :dir,        [String, nil]
 property :contact,    Array, default: []
@@ -71,13 +73,18 @@ action :create do
     owner     new_resource.owner
     group     new_resource.group
     mode      '400'
-    content   OpenSSL::PKey::RSA.new(new_resource.key_size).to_pem
+    content   case new_resource.key_type
+              when 'rsa'
+                OpenSSL::PKey::RSA.new(new_resource.key_size).to_pem
+              when 'ec'
+                OpenSSL::PKey::EC.generate(new_resource.ec_curve).to_pem
+              end
     sensitive true
     action    :nothing
   end.run_action(:create_if_missing)
 
   mycert   = nil
-  mykey    = OpenSSL::PKey::RSA.new ::File.read new_resource.key
+  mykey    = OpenSSL::PKey.read ::File.read new_resource.key
   names    = [new_resource.cn, new_resource.alt_names].flatten.compact
   renew_at = ::Time.now + 60 * 60 * 24 * node['acme']['renew']
 
