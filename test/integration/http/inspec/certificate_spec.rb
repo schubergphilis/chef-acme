@@ -73,3 +73,10 @@ describe command('openssl x509 -in /etc/ssl/ip.example.com.crt -noout -text') do
   its('stdout') { should match(/DNS:ip.example.com/) }
   its('stdout') { should match(/IP:192.168.18.17/) }
 end
+
+describe x509_certificate('/etc/ssl/ec.example.com.crt') do
+  it { should be_certificate }
+  its('validity_in_days') { should be > 30 }
+  its('subject.CN') { should match 'ec.example.com' }
+  its('issuer.CN') { should match /Pebble Intermediate CA/ }
+end

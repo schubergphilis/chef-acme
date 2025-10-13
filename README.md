@@ -65,6 +65,8 @@ Providers
 | `crt`               | string         | nil      | File path to place the certificate                     |
 | `key`               | string         | nil      | File path to place the private key                     |
 | `key_size`          | integer        | 2048     | Private key size. Must be one out of: 2048, 3072, 4096 |
+| `key_type`        | string         | rsa      | The type of the private key. Can be `rsa` or `ec`.       |
+| `ec_curve`        | string         | prime256v1 | The EC curve to use. Must be one of `prime256v1`, `secp384r1`, `secp521r1`. |
 | `owner`             | string,integer | root     | Owner of the created files                             |
 | `group`             | string,integer | root     | Group of the created files                             |
 | `wwwroot`           | string         | /var/www | Path to the wwwroot of the domain                      |

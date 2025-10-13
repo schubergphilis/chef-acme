@@ -64,3 +64,12 @@ acme_selfsigned 'ip.example.com' do
   crt               '/etc/ssl/ip.example.com.crt'
   key               '/etc/ssl/ip.example.com.key'
 end
+
+acme_certificate 'ec.example.com' do
+  crt               '/etc/ssl/ec.example.com.crt'
+  key               '/etc/ssl/ec.example.com.key'
+  key_type          'ec'
+  ec_curve          'prime256v1'
+  wwwroot           '/var/www/html'
+  notifies          :reload, 'nginx_service[nginx]', :immediately
+end
