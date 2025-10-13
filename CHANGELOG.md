@@ -3,6 +3,12 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+4.1.8
+----------
+- thoutenbos - Update Test Kitchen
+- thoutenbos - Upgrade acme-client gem to v2.0.24
+- hristiy4n - Add support for ECC keys
+
 4.1.7
 ----------
 - seansith - Upgrade acme-client gem to v2.0.15
