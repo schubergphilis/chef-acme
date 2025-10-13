@@ -21,7 +21,25 @@
 apt_update 'update' if platform_family?('debian')
 
 node.default['golang']['version'] = '1.17.13'
-include_recipe 'golang::default'
+
+platform = case node['kernel']['machine']
+  when /i.86/
+    '386'
+  when /aarch64/
+    'arm64'
+  else
+    'amd64'
+  end
+
+golang 'Install go' do
+  scm_packages ['git']
+  version node['golang']['version'] if node['golang']['version']
+  url "https://go.dev/dl/go#{node['golang']['version']}.linux-#{platform}.tar.gz"
+end
+
+node['golang']['packages'].each do |package|
+  golang_package package
+end
 
 golang_package 'github.com/letsencrypt/pebble/...' do
   action [:install, :build]

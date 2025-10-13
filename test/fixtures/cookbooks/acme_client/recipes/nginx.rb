@@ -20,7 +20,7 @@
 
 # Install a webserver
 nginx_install 'nginx' do
-  source 'repo'
+  source 'distro'
 end
 
 nginx_config 'nginx'

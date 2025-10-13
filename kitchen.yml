@@ -14,18 +14,9 @@ provisioner:
   deprecations_as_errors: true
 
 platforms:
-  - name: bento/rockylinux-8
-  - name: bento/rockylinux-9
-    transport:
-      name: ssh
-      username: vagrant
-      password: vagrant
-  - name: debian-11
-  - name: ubuntu-22.04
-    transport:
-      name: ssh
-      username: vagrant
-      password: vagrant
+  - name: centos-stream-10
+  - name: debian-13
+  - name: ubuntu-24.04
 
 suites:
 - name: http
