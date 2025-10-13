@@ -25,5 +25,5 @@ default['acme']['source_ips']  = %w(66.133.109.36 64.78.149.164)
 
 default['acme']['private_key'] = nil
 default['acme']['private_key_file'] = '/etc/acme/account_private_key.pem'
-default['acme']['gem_version'] = '2.0.15'
+default['acme']['gem_version'] = '2.0.24'
 default['acme']['key_size']    = 2048
