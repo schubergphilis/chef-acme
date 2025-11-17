@@ -35,7 +35,7 @@ property :wwwroot,    String, default: '/var/www'
 
 property :key_size,   Integer, default: lazy { node['acme']['key_size'] }, equal_to: [2048, 3072, 4096]
 property :key_type,   String, default: 'rsa', equal_to: %w(rsa ec)
-property :ec_curve,   String, default: 'prime256v1', equal_to: %w(prime256v1 secp384r1 secp521r1)
+property :ec_curve,   String, default: lazy { node['acme']['ec_curve'] }, equal_to: %w(prime256v1 secp384r1 secp521r1)
 
 property :dir,        [String, nil]
 property :contact,    Array, default: []

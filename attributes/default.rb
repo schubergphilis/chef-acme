@@ -27,3 +27,4 @@ default['acme']['private_key'] = nil
 default['acme']['private_key_file'] = '/etc/acme/account_private_key.pem'
 default['acme']['gem_version'] = '2.0.24'
 default['acme']['key_size']    = 2048
+default['acme']['ec_curve']    = 'prime256v1'
