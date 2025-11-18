@@ -71,5 +71,14 @@ acme_certificate 'ec.example.com' do
   key_type          'ec'
   ec_curve          'prime256v1'
   wwwroot           '/var/www/html'
+end
+
+# Request certificate with both DNS and IP SANs (requires short-lived profile)
+acme_certificate 'ip.example.com' do
+  alt_names         ['192.168.18.17']
+  crt               '/etc/ssl/ip.example.com.crt'
+  key               '/etc/ssl/ip.example.com.key'
+  wwwroot           '/var/www/html'
+  profile           'shortlived'
   notifies          :reload, 'nginx_service[nginx]', :immediately
 end

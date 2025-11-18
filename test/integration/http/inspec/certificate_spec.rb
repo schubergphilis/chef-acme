@@ -80,3 +80,13 @@ describe x509_certificate('/etc/ssl/ec.example.com.crt') do
   its('subject.CN') { should match 'ec.example.com' }
   its('issuer.CN') { should match /Pebble Intermediate CA/ }
 end
+
+describe x509_certificate('/etc/ssl/ip.example.com.crt') do
+  it { should be_certificate }
+  its('key_length') { should be 2048 }
+  # Short-lived certificates are valid for ~6 days
+  its('validity_in_days') { should be <= 7 }
+  its('validity_in_days') { should be > 0 }
+  its('subject.CN') { should match 'ip.example.com' }
+  its('issuer.CN') { should match /Pebble Intermediate CA/ }
+end

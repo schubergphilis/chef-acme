@@ -58,8 +58,10 @@ def acme_client
   @client
 end
 
-def acme_order_certs_for(names)
-  acme_client.new_order(identifiers: names)
+def acme_order_certs_for(names, profile: nil)
+  order_params = { identifiers: names }
+  order_params[:profile] = profile if profile
+  acme_client.new_order(**order_params)
 end
 
 def acme_validate(authz)
