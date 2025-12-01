@@ -37,6 +37,8 @@ property :key_size,   Integer, default: lazy { node['acme']['key_size'] }, equal
 property :key_type,   String, default: 'rsa', equal_to: %w(rsa ec)
 property :ec_curve,   String, default: lazy { node['acme']['ec_curve'] }, equal_to: %w(prime256v1 secp384r1 secp521r1)
 
+property :profile,    [String, nil], default: nil, equal_to: [nil, 'shortlived']
+
 property :dir,        [String, nil]
 property :contact,    Array, default: []
 
@@ -86,14 +88,16 @@ action :create do
   mycert   = nil
   mykey    = OpenSSL::PKey.read ::File.read new_resource.key
   names    = [new_resource.cn, new_resource.alt_names].flatten.compact
-  renew_at = ::Time.now + 60 * 60 * 24 * node['acme']['renew']
+  # Calculate renewal time based on profile
+  renew_days = new_resource.profile == 'shortlived' ? 2 : node['acme']['renew']
+  renew_at = ::Time.now + 60 * 60 * 24 * renew_days
 
   if !new_resource.crt.nil? && ::File.exist?(new_resource.crt)
     mycert = ::OpenSSL::X509::Certificate.new ::File.read new_resource.crt
   end
 
   if mycert.nil? || mycert.not_after <= renew_at || names_changed?(mycert, names)
-    order = acme_order_certs_for(names)
+    order = acme_order_certs_for(names, profile: new_resource.profile)
     all_validations = []
     if new_resource.install_authz_block.nil?
       order.authorizations.each do |authorization|
