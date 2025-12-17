@@ -3,6 +3,12 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+4.2.0
+----------
+- stanhu - Add support for short-lived IP certificates
+- thoutenbos - Update test kitchen
+- thoutenbos - Upgrade acme-client gem to v2.0.30
+
 4.1.8
 ----------
 - thoutenbos - Update Test Kitchen
