@@ -24,6 +24,28 @@ rescue LoadError => e
   Chef::Log.warn("Acme library dependency 'acme-client' not loaded: #{e}")
 end
 
+def names_changed?(cert, names)
+  return false if names.empty?
+
+  san_extension = cert.extensions.find { |e| e.oid == 'subjectAltName' }
+  return false if san_extension.nil?
+
+  current = san_extension.value.split(', ').map { |v| v.split(':')[1] }
+  !(names - current).empty? || !(current - names).empty?
+end
+
+def format_names(names)
+  return nil if names.nil? || names.empty?
+
+  names.map do |name|
+    if valid_ip_address?(name)
+      { type: 'ip', value: name }
+    else
+      { type: 'dns', value: name }
+    end
+  end
+end
+
 def acme_client
   return @client if @client
 
@@ -134,7 +156,7 @@ def self_signed_cert(cn, alts, key)
 
   cert.extensions += [ef.create_extension('basicConstraints', 'CA:FALSE', true)]
   cert.extensions += [ef.create_extension('subjectKeyIdentifier', 'hash')]
-  san = create_subject_alt_names(alts)
+  san = create_subject_alt_names([cn] + alts)
   cert.extensions += [ef.create_extension('subjectAltName', san)] if san
 
   cert.sign key, OpenSSL::Digest.new('SHA256')

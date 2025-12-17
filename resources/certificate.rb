@@ -37,7 +37,7 @@ property :key_size,   Integer, default: lazy { node['acme']['key_size'] }, equal
 property :key_type,   String, default: 'rsa', equal_to: %w(rsa ec)
 property :ec_curve,   String, default: lazy { node['acme']['ec_curve'] }, equal_to: %w(prime256v1 secp384r1 secp521r1)
 
-property :profile,    [String, nil], default: nil, equal_to: [nil, 'shortlived']
+property :profile,    String, default: 'default', equal_to: ['default', 'shortlived']
 
 property :dir,        [String, nil]
 property :contact,    Array, default: []
@@ -58,16 +58,6 @@ property :chain, String, deprecated: 'The chain property has been deprecated as 
 deprecated_property_alias 'fullchain', 'crt', 'The fullchain property has been deprecated as the acme-client gem now returns the full certificate chain by default (on the crt property.) Please update your cookbooks to switch to \'crt\'.'
 
 deprecated_property_alias 'endpoint', 'dir', 'The endpoint property was renamed to dir, to reflect ACME v2 changes. Please update your cookbooks to use the new property name.'
-
-def names_changed?(cert, names)
-  return false if names.empty?
-
-  san_extension = cert.extensions.find { |e| e.oid == 'subjectAltName' }
-  return false if san_extension.nil?
-
-  current = san_extension.value.split(', ').select { |v| v.start_with?('DNS:') }.map { |v| v.split(':')[1] }
-  !(names - current).empty? || !(current - names).empty?
-end
 
 action :create do
   file "#{new_resource.cn} SSL key" do
@@ -97,7 +87,7 @@ action :create do
   end
 
   if mycert.nil? || mycert.not_after <= renew_at || names_changed?(mycert, names)
-    order = acme_order_certs_for(names, profile: new_resource.profile)
+    order = acme_order_certs_for(format_names(names), profile: new_resource.profile)
     all_validations = []
     if new_resource.install_authz_block.nil?
       order.authorizations.each do |authorization|
