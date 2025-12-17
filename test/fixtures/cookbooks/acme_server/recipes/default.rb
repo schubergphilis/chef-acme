@@ -19,8 +19,9 @@
 #
 
 apt_update 'update' if platform_family?('debian')
+package 'selinux-utils' if platform_family?('debian')
 
-node.default['golang']['version'] = '1.17.13'
+node.default['golang']['version'] = '1.24.4'
 
 platform = case node['kernel']['machine']
   when /i.86/
@@ -41,14 +42,28 @@ node['golang']['packages'].each do |package|
   golang_package package
 end
 
-golang_package 'github.com/letsencrypt/pebble/...' do
-  action [:install, :build]
+git '/usr/local/src/pebble' do
+  repository 'https://github.com/letsencrypt/pebble.git'
+  revision 'v2.8.0'
+end
+
+execute '/usr/local/go/bin/go install ./cmd/pebble' do
+  cwd '/usr/local/src/pebble'
+  environment ({'GOPATH' => '/opt/go', 'GOBIN' => '/opt/go/bin'})
+end
+
+selinux_fcontext '/opt/go/bin/pebble' do
+  secontext 'usr_t'
+end
+
+cookbook_file '/usr/local/src/pebble/test/config/pebble-config.json' do
+  source 'pebble-config.json'
 end
 
 # Needed for the acme-client gem to continue connecting to pebble;
 # please do NOT do this on production Chef nodes!
 execute 'update Chef trusted certificates store' do
-  command "cat #{node['golang']['gopath']}/pkg/mod/github.com/letsencrypt/pebble@v1.0.1/test/certs/pebble.minica.pem >> /opt/chef/embedded/ssl/certs/cacert.pem && touch /opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED"
+  command "cat /usr/local/src/pebble/test/certs/pebble.minica.pem >> /opt/chef/embedded/ssl/certs/cacert.pem && touch /opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED"
   creates '/opt/chef/embedded/ssl/certs/PEBBLE-MINICA-IS-INSTALLED'
 end
 
@@ -64,11 +79,14 @@ systemd_unit 'pebble.service' do
 
     [Service]
     User=pebble
-    WorkingDirectory=#{node['golang']['gopath']}/pkg/mod/github.com/letsencrypt/pebble@v1.0.1
+    WorkingDirectory=/usr/local/src/pebble
     ExecStart=#{node['golang']['gobin']}/pebble -config ./test/config/pebble-config.json
-    Environment="GOPATH=#{node['golang']['gopath']}" "GOBIN=#{node['golang']['gobin']}"
-    # let pebble always validate and never reject requests
-    Environment=PEBBLE_VA_ALWAYS_VALID=1 PEBBLE_VA_NOSLEEP=1 PEBBLE_WFE_NONCEREJECT=0
+    Environment="GOPATH=#{node['golang']['gopath']}"
+    Environment="GOBIN=#{node['golang']['gobin']}"
+    Environment="PEBBLE_VA_ALWAYS_VALID=0"
+    Environment="PEBBLE_VA_NOSLEEP=1"
+    Environment="PEBBLE_WFE_NONCEREJECT=0"
+    Environment="PEBBLE_AUTHZREUSE=0"
 
     [Install]
     WantedBy=multi-user.target

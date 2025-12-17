@@ -20,10 +20,30 @@
 
 include_recipe 'acme'
 
-# Generate selfsigned certificate so nginx can start
-acme_selfsigned 'test.example.com' do
-  crt     '/etc/ssl/test.example.com.crt'
-  key     '/etc/ssl/test.example.com.key'
+hostsfile_entry '127.0.0.1' do
+  hostname 'localhost'
+  aliases [
+    'localhost.localdomain',
+    'localhost4',
+    'localhost4.localdomain4',
+    'test.example.com',
+    'test1.example.com',
+    'test2.example.com',
+    'new.example.com',
+    'web.example.com',
+    'mail.example.com',
+    '4096.example.com',
+    'ec.example.com',
+    'short.example.com',
+]
+end
+
+# Generate selfsigned certificates so nginx can start
+%w(test new web ec).each do |n|
+  acme_selfsigned "#{n}.example.com" do
+    crt     "/etc/ssl/#{n}.example.com.crt"
+    key     "/etc/ssl/#{n}.example.com.key"
+  end
 end
 
 include_recipe 'acme_client::nginx'
@@ -60,7 +80,7 @@ end
 
 # Generate selfsigned certificate with both DNS and IP SANs for test
 acme_selfsigned 'ip.example.com' do
-  alt_names         ['ip.example.com', '192.168.18.17']
+  alt_names         ['192.168.18.17']
   crt               '/etc/ssl/ip.example.com.crt'
   key               '/etc/ssl/ip.example.com.key'
 end
@@ -74,10 +94,10 @@ acme_certificate 'ec.example.com' do
 end
 
 # Request certificate with both DNS and IP SANs (requires short-lived profile)
-acme_certificate 'ip.example.com' do
-  alt_names         ['192.168.18.17']
-  crt               '/etc/ssl/ip.example.com.crt'
-  key               '/etc/ssl/ip.example.com.key'
+acme_certificate 'short.example.com' do
+  alt_names         [node['ipaddress']]
+  crt               '/etc/ssl/short.example.com.crt'
+  key               '/etc/ssl/short.example.com.key'
   wwwroot           '/var/www/html'
   profile           'shortlived'
   notifies          :reload, 'nginx_service[nginx]', :immediately

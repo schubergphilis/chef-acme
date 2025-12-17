@@ -32,6 +32,16 @@ end
 nginx_site 'test' do
   cookbook cookbook_name
   template 'nginx-test.conf'
+end
 
-  notifies :reload, 'nginx_service[nginx]', :immediately
+file '/etc/nginx/conf.http.d/list.conf' do
+  content <<-EOF
+# Include files
+include /etc/nginx/conf.http.d/default-site.conf;
+include /etc/nginx/conf.http.d/test.conf;
+EOF
+end
+
+service 'nginx' do
+  action :restart
 end
