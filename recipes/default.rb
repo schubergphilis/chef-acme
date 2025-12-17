@@ -18,6 +18,10 @@
 # limitations under the License.
 #
 
+if Gem::Version.new(node['acme']['gem_version']) < Gem::Version.new('2.0.30')
+  Chef::Log.warn('acme acme-client gem version 2.0.30 or newer is required')
+end
+
 chef_gem 'acme-client' do
   action :install
   version node['acme']['gem_version']
