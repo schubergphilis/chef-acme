@@ -3,6 +3,10 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+4.2.1
+----------
+- stanhu - Fix default profile name
+
 4.2.0
 ----------
 - stanhu - Add support for short-lived IP certificates
