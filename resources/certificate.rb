@@ -38,7 +38,7 @@ property :key_type,   String, default: 'rsa', equal_to: %w(rsa ec)
 property :ec_curve,   String, default: lazy { node['acme']['ec_curve'] }, equal_to: %w(prime256v1 secp384r1 secp521r1)
 
 # From https://letsencrypt.org/docs/profiles/
-property :profile,    String, default: 'classic', equal_to: %w(classic shortlived tlsclient tlsserver)
+property :profile,    [String, nil], default: nil, equal_to: [nil] + %w(classic shortlived tlsclient tlsserver)
 
 property :dir,        [String, nil]
 property :contact,    Array, default: []
