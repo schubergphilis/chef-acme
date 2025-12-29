@@ -18,12 +18,12 @@ Attributes
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------       | --------------------------------------:          |
 | contact          | Contact information, default empty. Set to `mailto:your@email.com`                                                                                                             | []                                               |
 | dir              | ACME server endpoint, Set to `https://acme-staging-v02.api.letsencrypt.org/directory` if you want to use the Let's Encrypt staging environment and corresponding certificates. | `https://acme-v02.api.letsencrypt.org/directory` |
-| renew            | Days before the certificate expires at which the certificate will be renewed                                                                                                   | 30                                               |
-| source_ips       | IP addresses used by Let's Encrypt to verify the TLS certificates, it will change over time. This attribute is for firewall purposes. Allow these IPs for HTTP (tcp/80).       | ['66.133.109.36']                                |
+| renew            | Days before the certificate expires at which the certificate will be renewed                                                                                                   | 3                                                |
 | private_key      | Private key content of registered account. Private keys identify the ACME client with the endpoint and are not transferable between staging and production endpoints.          | nil                                              |
 | private_key_file | Filename where private key will be saved. If this file exists, the contents take precedence over the value set in `private_key`.                                               | `/etc/acme/account_private_key.pem`              |
 | key_size         | Default private key size used when resource property is not. Must be one out of: 2048, 3072, 4096.                                                                             | 2048                                             |
-
+| gem_version      | The version of the acme-client gem to install.                                                                                                                                 |                                                  |
+| ec_curve         | The EC default curve to use, when requesting an EC certificate.                                                                                                                | prime256v1                                       |
 
 Recipes
 -------
@@ -39,6 +39,7 @@ acme_certificate 'test.example.com' do
   crt               '/etc/ssl/test.example.com.crt'
   key               '/etc/ssl/test.example.com.key'
   wwwroot           '/var/www'
+  profile           'tlsserver'
 end
 ```
 
@@ -75,6 +76,7 @@ Providers
 | `retry_delay`       | integer        | 2        | Number of seconds to wait between retries              |
 | `endpoint`          | string         | nil      | The Let's Encrypt endpoint to use                      |
 | `contact`           | array          | []       | The contact to use                                     |
+| `profile`           | string         | nil      | The Let's Encrypt profile name to use. Must be one of `classic`, `shortlived`, `tlsclient`, `tlsserver`. |
 
 ### selfsigned
 | Property         | Type           | Default  | Description                                            |
@@ -117,10 +119,11 @@ end
 
 # Get and auto-renew the certificate from Let's Encrypt
 acme_certificate "#{site}" do
-  crt               "/etc/httpd/ssl/#{site}.crt"
-  key               "/etc/httpd/ssl/#{site}.key"
-  wwwroot           "/var/www/#{site}/htdocs/"
-  notifies :restart, "service[apache2]"
+  crt                "/etc/httpd/ssl/#{site}.crt"
+  key                "/etc/httpd/ssl/#{site}.key"
+  wwwroot            "/var/www/#{site}/htdocs/"
+  profile            'tlsserver'
+  notifies :restart, 'service[apache2]'
   alt_names sans
 end
 ```
@@ -171,6 +174,7 @@ apitoken = chef_vault_item(vault, item)['dns_api_token']
 acme_certificate node['fqdn'] do
   key '/path/to/key'
   crt '/path/to/crt'
+  profile 'tlsserver'
   install_authz_block install_dns_challenge(apitoken)
   remove_authz_block remove_dns_challenge(apitoken)
 end
