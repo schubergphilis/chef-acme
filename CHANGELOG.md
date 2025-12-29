@@ -3,6 +3,13 @@ ACME Cookbook Changelog
 
 This file is used to list changes made in each version of the acme cookbook.
 
+4.2.2
+----------
+- stanhu - Allow nil profiles by default
+- thoutenbos - Remove obsolete source_ips
+- thoutenbos - Update test kitchen for profiles
+- thoutenbos - Update README
+
 4.2.1
 ----------
 - stanhu - Fix default profile name
