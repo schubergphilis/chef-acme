@@ -14,8 +14,16 @@
         "order": 5
     },
     "profiles": {
-      "default": {
+      "classic": {
         "description": "The profile you know and love",
+        "validityPeriod": 7776000
+      },
+      "tlsserver": {
+        "description": "TLS Server profile",
+        "validityPeriod": 7776000
+      },
+      "tlsclient": {
+        "description": "TLS Client profile",
         "validityPeriod": 7776000
       },
       "shortlived": {

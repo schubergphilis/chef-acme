@@ -54,6 +54,7 @@ acme_certificate 'test.example.com' do
   crt               '/etc/ssl/test.example.com.crt'
   key               '/etc/ssl/test.example.com.key'
   wwwroot           '/var/www/html'
+  profile           'tlsserver'
   notifies          :reload, 'nginx_service[nginx]', :immediately
 end
 
@@ -61,6 +62,7 @@ acme_certificate 'new.example.com' do
   crt               '/etc/ssl/new.example.com.crt'
   key               '/etc/ssl/new.example.com.key'
   wwwroot           '/var/www/html'
+  profile           'tlsserver'
 end
 
 acme_certificate '4096.example.com' do
@@ -68,6 +70,7 @@ acme_certificate '4096.example.com' do
   key               '/etc/ssl/4096.example.com.key'
   key_size          4096
   wwwroot           '/var/www/html'
+  profile           'tlsserver'
 end
 
 acme_certificate 'web.example.com' do
@@ -75,6 +78,7 @@ acme_certificate 'web.example.com' do
   crt               '/etc/ssl/web.example.com.crt'
   key               '/etc/ssl/web.example.com.key'
   wwwroot           '/var/www/html'
+  profile           'tlsserver'
   notifies          :reload, 'nginx_service[nginx]', :immediately
 end
 
@@ -91,6 +95,7 @@ acme_certificate 'ec.example.com' do
   key_type          'ec'
   ec_curve          'prime256v1'
   wwwroot           '/var/www/html'
+  profile           'tlsserver'
 end
 
 # Request certificate with both DNS and IP SANs (requires short-lived profile)
