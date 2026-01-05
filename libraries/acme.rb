@@ -144,7 +144,11 @@ def self_signed_cert(cn, alts, key)
   cert.subject = cert.issuer = OpenSSL::X509::Name.new([['CN', cn, OpenSSL::ASN1::UTF8STRING]])
   cert.not_before = Time.now
   cert.not_after = Time.now + 60 * 60 * 24 * node['acme']['renew']
-  cert.public_key = key.public_key
+  if key.is_a?(OpenSSL::PKey::EC)
+    cert.public_key = key
+  else
+    cert.public_key = key.public_key
+  end
   cert.serial = 0x0
   cert.version = 2
 
