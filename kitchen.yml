@@ -19,12 +19,21 @@ platforms:
   - name: ubuntu-24.04
 
 suites:
-- name: http
-  run_list:
-    - recipe[acme_server]
-    - recipe[acme_client::http]
-  attributes:
-    acme:
-      dir: https://127.0.0.1:14000/dir
-      contact:
-        - mailto:admin@example.com
+  - name: http
+    run_list:
+      - recipe[acme_server]
+      - recipe[acme_client::http]
+    attributes:
+      acme:
+        dir: https://127.0.0.1:14000/dir
+        contact:
+          - mailto:admin@example.com
+  - name: selfsigned
+    run_list:
+      - recipe[acme_server]
+      - recipe[acme_client::selfsigned]
+    attributes:
+      acme:
+        dir: https://127.0.0.1:14000/dir
+        contact:
+          - mailto:admin@example.com
